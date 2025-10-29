@@ -1,0 +1,87 @@
+[
+  {
+    "date": "2024-01-05",
+    "page_views": 1250,
+    "unique_users": 840,
+    "bounce_rate": 0.42,
+    "campaigns": [
+      {
+        "name": "google_ads",
+        "channel": "paid_search",
+        "cost": 120
+      },
+      {
+        "name": "email_jan",
+        "channel": "email",
+        "cost": 50
+      }
+    ]
+  },
+  {
+    "date": "2024-01-15",
+    "page_views": 1300,
+    "unique_users": 900,
+    "bounce_rate": 0.4,
+    "campaigns": [
+      {
+        "name": "google_ads",
+        "channel": "paid_search",
+        "cost": 130
+      },
+      {
+        "name": "facebook_jan",
+        "channel": "social",
+        "cost": 0
+      }
+    ]
+  },
+  {
+    "date": "2024-02-05",
+    "page_views": 1100,
+    "unique_users": 750,
+    "bounce_rate": 0.45,
+    "campaigns": [
+      {
+        "name": "google_ads",
+        "channel": "paid_search",
+        "cost": 110
+      },
+      {
+        "name": "email_feb",
+        "channel": "email",
+        "cost": 40
+      }
+    ]
+  },
+  {
+    "date": "2024-02-15",
+    "page_views": 1150,
+    "unique_users": 780,
+    "bounce_rate": 0.44,
+    "campaigns": [
+      {
+        "name": "google_ads",
+        "channel": "paid_search",
+        "cost": 115
+      }
+    ]
+  },
+  {
+    "date": "2024-03-05",
+    "page_views": 1400,
+    "unique_users": 950,
+    "bounce_rate": 0.38,
+    "campaigns": [
+      {
+        "name": "google_ads",
+        "channel": "paid_search",
+        "cost": 140
+      },
+      {
+        "name": "email_mar",
+        "channel": "email",
+        "cost": 55
+      }
+    ]
+  }
+]
