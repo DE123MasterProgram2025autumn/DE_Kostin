@@ -1,0 +1,38 @@
+[
+  {
+    "date": "2024-01-05",
+    "page_views": 1250,
+    "unique_users": 840,
+    "bounce_rate": 0.42,
+    "campaigns": [
+      {
+        "name": "google_ads",
+        "channel": "paid_search",
+        "cost": 120
+      },
+      {
+        "name": "email_jan",
+        "channel": "email",
+        "cost": 50
+      }
+    ]
+  },
+  {
+    "date": "2024-01-15",
+    "page_views": 1300,
+    "unique_users": 900,
+    "bounce_rate": 0.4,
+    "campaigns": [
+      {
+        "name": "google_ads",
+        "channel": "paid_search",
+        "cost": 130
+      },
+      {
+        "name": "facebook_jan",
+        "channel": "social",
+        "cost": 0
+      }
+    ]
+  }
+]
