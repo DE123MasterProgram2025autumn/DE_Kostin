@@ -7517,16 +7517,6 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h4 id="29.10.25,-%C2%A9-Evhenii-Kostin,-2025">29.10.25, © <a href="https://github.com/DE123MasterProgram2025autumn/DE_Kostin">Evhenii Kostin</a>, 2025<a class="anchor-link" href="#29.10.25,-%C2%A9-Evhenii-Kostin,-2025">¶</a></h4>
 </div>
 </div>
@@ -7560,7 +7550,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="%D0%92%D0%B0%D1%80%D1%96%D0%B0%D0%BD%D1%82-2">Варіант 2<a class="anchor-link" href="#%D0%92%D0%B0%D1%80%D1%96%D0%B0%D0%BD%D1%82-2">¶</a></h3>
+<h3 id="%D0%92%D0%B0%D1%80%D1%96%D0%B0%D0%BD%D1%82-2">Варіант 2<a class="anchor-link" href="#%D0%92%D0%B0%D1%80%D1%96%D0%B0%D0%BD%D1%82-2">¶</a></h3><h4 id="%D0%A2%D0%B5%D0%BC%D0%B0:-%D0%90%D0%BD%D0%B0%D0%BB%D1%96%D0%B7-%D1%81%D1%82%D1%83%D0%B4%D0%B5%D0%BD%D1%82%D1%81%D1%8C%D0%BA%D0%B8%D1%85-%D0%BE%D1%86%D1%96%D0%BD%D0%BE%D0%BA-%D0%B7%D0%B0-%D0%B4%D0%B2%D0%B0-%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80%D0%B8">Тема: Аналіз студентських оцінок за два семестри<a class="anchor-link" href="#%D0%A2%D0%B5%D0%BC%D0%B0:-%D0%90%D0%BD%D0%B0%D0%BB%D1%96%D0%B7-%D1%81%D1%82%D1%83%D0%B4%D0%B5%D0%BD%D1%82%D1%81%D1%8C%D0%BA%D0%B8%D1%85-%D0%BE%D1%86%D1%96%D0%BD%D0%BE%D0%BA-%D0%B7%D0%B0-%D0%B4%D0%B2%D0%B0-%D1%81%D0%B5%D0%BC%D0%B5%D1%81%D1%82%D1%80%D0%B8">¶</a></h4>
 </div>
 </div>
 </div>
@@ -7569,72 +7559,86 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># --- 0. ПІДКЛЮЧЕННЯ БІБЛІОТЕК ---</span>
+<span class="c1"># Встановлюємо пакети, якщо їх немає</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span>require<span class="o">(</span><span class="s2">"tidyverse"</span><span class="o">))</span><span class="w"> </span>install.packages<span class="o">(</span><span class="s2">"tidyverse"</span><span class="o">)</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span>require<span class="o">(</span><span class="s2">"writexl"</span><span class="o">))</span><span class="w"> </span>install.packages<span class="o">(</span><span class="s2">"writexl"</span><span class="o">)</span>
+
+<span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span> <span class="c1"># Для tibble() та readr::write_csv()</span>
+<span class="n">library</span><span class="p">(</span><span class="n">writexl</span><span class="p">)</span>   <span class="c1"># Для запису .xlsx файлів</span>
 
 <span class="c1"># --- 1. НАЛАШТУВАННЯ ТА СТВОРЕННЯ ПАПКИ ---</span>
-<span class="n">data_dir</span> <span class="o">=</span> <span class="s2">"data"</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">data_dir</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Створено папку: </span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Папка </span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2"> вже існує."</span><span class="p">)</span>
+<span class="n">data_dir</span> <span class="o">&lt;-</span> <span class="s2">"data"</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span>dir.exists<span class="o">(</span>data_dir<span class="o">))</span><span class="w"> </span><span class="o">{</span>
+  <span class="nb">dir</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">recursive</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">)</span> <span class="c1"># recursive = TRUE аналог os.makedirs</span>
+  <span class="n">message</span><span class="p">(</span><span class="n">paste</span><span class="p">(</span><span class="s2">"Створено папку:"</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">))</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+  <span class="n">message</span><span class="p">(</span><span class="n">paste</span><span class="p">(</span><span class="s2">"Папка"</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">,</span> <span class="s2">"вже існує."</span><span class="p">))</span>
+<span class="p">}</span>
 
-<span class="c1"># --- 2. ГЕНЕРАЦІЯ ДАНИХ (у вигляді Pandas DataFrame) ---</span>
+<span class="c1"># --- 2. ГЕНЕРАЦІЯ ДАНИХ (у вигляді R tibbles) ---</span>
+<span class="c1"># tibble - це сучасний аналог data.frame з tidyverse</span>
 
 <span class="c1"># Довідник студентів</span>
-<span class="n">students</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-  <span class="s1">'student_id'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S02"</span><span class="p">,</span> <span class="s2">"S03"</span><span class="p">,</span> <span class="s2">"S04"</span><span class="p">,</span> <span class="s2">"S05"</span><span class="p">,</span> <span class="s2">"S06"</span><span class="p">],</span>
-  <span class="s1">'full_name'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Іваненко Петро"</span><span class="p">,</span> <span class="s2">"Коваленко Марія"</span><span class="p">,</span> <span class="s2">"Сидоренко Валерій"</span><span class="p">,</span> <span class="s2">"Мельник Олена"</span><span class="p">,</span> <span class="s2">"Кравчук Андрій"</span><span class="p">,</span> <span class="s2">"Лисенко Ірина"</span><span class="p">],</span>
-  <span class="s1">'group'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"IT-21"</span><span class="p">,</span> <span class="s2">"IT-21"</span><span class="p">,</span> <span class="s2">"IT-22"</span><span class="p">,</span> <span class="s2">"IT-22"</span><span class="p">,</span> <span class="s2">"IT-21"</span><span class="p">,</span> <span class="s2">"IT-22"</span><span class="p">],</span>
-  <span class="s1">'faculty'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"FICT"</span><span class="p">,</span> <span class="s2">"FICT"</span><span class="p">,</span> <span class="s2">"FICT"</span><span class="p">,</span> <span class="s2">"FICT"</span><span class="p">,</span> <span class="s2">"FICT"</span><span class="p">,</span> <span class="s2">"FICT"</span><span class="p">]</span>
-<span class="p">})</span>
+<span class="n">students</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="p">(</span>
+  <span class="n">student_id</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S02"</span><span class="p">,</span> <span class="s2">"S03"</span><span class="p">,</span> <span class="s2">"S04"</span><span class="p">,</span> <span class="s2">"S05"</span><span class="p">,</span> <span class="s2">"S06"</span><span class="p">),</span>
+  <span class="n">full_name</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s2">"Іваненко Петро"</span><span class="p">,</span> <span class="s2">"Коваленко Марія"</span><span class="p">,</span> <span class="s2">"Сидоренко Валерій"</span><span class="p">,</span> <span class="s2">"Мельник Олена"</span><span class="p">,</span> <span class="s2">"Кравчук Андрій"</span><span class="p">,</span> <span class="s2">"Лисенко Ірина"</span><span class="p">),</span>
+  <span class="n">group</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s2">"IT-21"</span><span class="p">,</span> <span class="s2">"IT-21"</span><span class="p">,</span> <span class="s2">"IT-22"</span><span class="p">,</span> <span class="s2">"IT-22"</span><span class="p">,</span> <span class="s2">"IT-21"</span><span class="p">,</span> <span class="s2">"IT-22"</span><span class="p">),</span>
+  <span class="n">faculty</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s2">"FICT"</span><span class="p">,</span> <span class="s2">"FICT"</span><span class="p">,</span> <span class="s2">"FICT"</span><span class="p">,</span> <span class="s2">"FICT"</span><span class="p">,</span> <span class="s2">"FICT"</span><span class="p">,</span> <span class="s2">"FICT"</span><span class="p">)</span>
+<span class="p">)</span>
 
 <span class="c1"># --- Семестр 1 ---</span>
-<span class="n">grades_math_s1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">'student_id'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S02"</span><span class="p">,</span> <span class="s2">"S03"</span><span class="p">,</span> <span class="s2">"S04"</span><span class="p">],</span> <span class="s1">'exam_score'</span><span class="p">:</span> <span class="p">[</span><span class="mi">85</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">60</span><span class="p">],</span> <span class="s1">'project_score'</span><span class="p">:</span> <span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">88</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">65</span><span class="p">]})</span>
-<span class="n">grades_physics_s1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">'student_id'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S02"</span><span class="p">,</span> <span class="s2">"S03"</span><span class="p">,</span> <span class="s2">"S04"</span><span class="p">],</span> <span class="s1">'exam_score'</span><span class="p">:</span> <span class="p">[</span><span class="mi">95</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">70</span><span class="p">],</span> <span class="s1">'project_score'</span><span class="p">:</span> <span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">75</span><span class="p">]})</span>
-<span class="n">grades_cs_s1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">'student_id'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S02"</span><span class="p">,</span> <span class="s2">"S03"</span><span class="p">,</span> <span class="s2">"S04"</span><span class="p">],</span> <span class="s1">'exam_score'</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">80</span><span class="p">],</span> <span class="s1">'project_score'</span><span class="p">:</span> <span class="p">[</span><span class="mi">95</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">85</span><span class="p">]})</span>
+<span class="n">grades_math_s1</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="p">(</span><span class="n">student_id</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S02"</span><span class="p">,</span> <span class="s2">"S03"</span><span class="p">,</span> <span class="s2">"S04"</span><span class="p">),</span> <span class="n">exam_score</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="mi">60</span><span class="p">),</span> <span class="n">project_score</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">88</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">65</span><span class="p">))</span>
+<span class="n">grades_physics_s1</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="p">(</span><span class="n">student_id</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S02"</span><span class="p">,</span> <span class="s2">"S03"</span><span class="p">,</span> <span class="s2">"S04"</span><span class="p">),</span> <span class="n">exam_score</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">70</span><span class="p">),</span> <span class="n">project_score</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">75</span><span class="p">))</span>
+<span class="n">grades_cs_s1</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="p">(</span><span class="n">student_id</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S02"</span><span class="p">,</span> <span class="s2">"S03"</span><span class="p">,</span> <span class="s2">"S04"</span><span class="p">),</span> <span class="n">exam_score</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">80</span><span class="p">),</span> <span class="n">project_score</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">85</span><span class="p">))</span>
 
 <span class="c1"># --- Семестр 2 ---</span>
-<span class="n">grades_math_s2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">'student_id'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S02"</span><span class="p">,</span> <span class="s2">"S05"</span><span class="p">,</span> <span class="s2">"S06"</span><span class="p">],</span> <span class="s1">'exam_score'</span><span class="p">:</span> <span class="p">[</span><span class="mi">88</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">82</span><span class="p">],</span> <span class="s1">'project_score'</span><span class="p">:</span> <span class="p">[</span><span class="mi">92</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">]})</span>
-<span class="n">grades_physics_s2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">'student_id'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S02"</span><span class="p">,</span> <span class="s2">"S05"</span><span class="p">,</span> <span class="s2">"S06"</span><span class="p">],</span> <span class="s1">'exam_score'</span><span class="p">:</span> <span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="mi">88</span><span class="p">],</span> <span class="s1">'project_score'</span><span class="p">:</span> <span class="p">[</span><span class="mi">95</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">85</span><span class="p">]})</span>
-<span class="n">grades_cs_s2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">'student_id'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S02"</span><span class="p">,</span> <span class="s2">"S05"</span><span class="p">,</span> <span class="s2">"S06"</span><span class="p">],</span> <span class="s1">'exam_score'</span><span class="p">:</span> <span class="p">[</span><span class="mi">98</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">85</span><span class="p">],</span> <span class="s1">'project_score'</span><span class="p">:</span> <span class="p">[</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">88</span><span class="p">]})</span>
+<span class="n">grades_math_s2</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="p">(</span><span class="n">student_id</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S02"</span><span class="p">,</span> <span class="s2">"S05"</span><span class="p">,</span> <span class="s2">"S06"</span><span class="p">),</span> <span class="n">exam_score</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">88</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">82</span><span class="p">),</span> <span class="n">project_score</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">92</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">80</span><span class="p">))</span>
+<span class="n">grades_physics_s2</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="p">(</span><span class="n">student_id</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S02"</span><span class="p">,</span> <span class="s2">"S05"</span><span class="p">,</span> <span class="s2">"S06"</span><span class="p">),</span> <span class="n">exam_score</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="mi">88</span><span class="p">),</span> <span class="n">project_score</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">95</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">85</span><span class="p">))</span>
+<span class="n">grades_cs_s2</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="p">(</span><span class="n">student_id</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S02"</span><span class="p">,</span> <span class="s2">"S05"</span><span class="p">,</span> <span class="s2">"S06"</span><span class="p">),</span> <span class="n">exam_score</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="mi">85</span><span class="p">),</span> <span class="n">project_score</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">88</span><span class="p">))</span>
 
 <span class="c1"># --- Стипендії ---</span>
-<span class="n">scholarships</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-  <span class="s1">'student_id'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S03"</span><span class="p">,</span> <span class="s2">"S05"</span><span class="p">],</span>
-  <span class="s1">'scholarship_type'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"academic"</span><span class="p">,</span> <span class="s2">"academic"</span><span class="p">,</span> <span class="s2">"social"</span><span class="p">],</span>
-  <span class="s1">'amount'</span><span class="p">:</span> <span class="p">[</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">1500</span><span class="p">]</span>
-<span class="p">})</span>
+<span class="n">scholarships</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="p">(</span>
+  <span class="n">student_id</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s2">"S01"</span><span class="p">,</span> <span class="s2">"S03"</span><span class="p">,</span> <span class="s2">"S05"</span><span class="p">),</span>
+  <span class="n">scholarship_type</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s2">"academic"</span><span class="p">,</span> <span class="s2">"academic"</span><span class="p">,</span> <span class="s2">"social"</span><span class="p">),</span>
+  <span class="n">amount</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">1500</span><span class="p">)</span>
+<span class="p">)</span>
 
 <span class="c1"># --- 3. ЗАПИС ФАЙЛІВ ---</span>
 
-<span class="c1"># Запис Excel-файлів</span>
-<span class="c1"># Використовуємо pd.ExcelWriter, щоб додати кілька аркушів в один файл</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">with</span> <span class="n">pd</span><span class="o">.</span><span class="n">ExcelWriter</span><span class="p">(</span><span class="s1">'data/semester1.xlsx'</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">'openpyxl'</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
-        <span class="n">students</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">'students'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">grades_math_s1</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">'grades_math'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">grades_physics_s1</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">'grades_physics'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">grades_cs_s1</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">'grades_cs'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    
-    <span class="k">with</span> <span class="n">pd</span><span class="o">.</span><span class="n">ExcelWriter</span><span class="p">(</span><span class="s1">'data/semester2.xlsx'</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">'openpyxl'</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
-        <span class="n">grades_math_s2</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">'grades_math'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">grades_physics_s2</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">'grades_physics'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">grades_cs_s2</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">'grades_cs'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    
-    <span class="c1"># Запис CSV-файлу</span>
-    <span class="n">scholarships</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">"data/scholarships.csv"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- Python-скрипт успішно створив файли: ---"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">data_dir</span><span class="p">))</span>
+<span class="c1"># Для запису кількох аркушів, writexl приймає іменований список (list)</span>
+<span class="n">semester1_data</span> <span class="o">&lt;-</span> <span class="nb">list</span><span class="p">(</span>
+  <span class="n">students</span> <span class="o">=</span> <span class="n">students</span><span class="p">,</span>
+  <span class="n">grades_math</span> <span class="o">=</span> <span class="n">grades_math_s1</span><span class="p">,</span>
+  <span class="n">grades_physics</span> <span class="o">=</span> <span class="n">grades_physics_s1</span><span class="p">,</span>
+  <span class="n">grades_cs</span> <span class="o">=</span> <span class="n">grades_cs_s1</span>
+<span class="p">)</span>
 
-<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- !!! Виникла помилка під час запису файлів: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2"> ---"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Переконайтеся, що у вас встановлено 'openpyxl': !pip install openpyxl"</span><span class="p">)</span>
+<span class="n">semester2_data</span> <span class="o">&lt;-</span> <span class="nb">list</span><span class="p">(</span>
+  <span class="n">grades_math</span> <span class="o">=</span> <span class="n">grades_math_s2</span><span class="p">,</span>
+  <span class="n">grades_physics</span> <span class="o">=</span> <span class="n">grades_physics_s2</span><span class="p">,</span>
+  <span class="n">grades_cs</span> <span class="o">=</span> <span class="n">grades_cs_s2</span>
+<span class="p">)</span>
+
+<span class="c1"># Використовуємо tryCatch для обробки помилок (аналог try...except)</span>
+<span class="n">tryCatch</span><span class="p">({</span>
+  <span class="c1"># Запис Excel-файлів</span>
+  <span class="n">writexl</span><span class="p">::</span><span class="n">write_xlsx</span><span class="p">(</span><span class="n">semester1_data</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="s2">"data/semester1.xlsx"</span><span class="p">)</span>
+  <span class="n">writexl</span><span class="p">::</span><span class="n">write_xlsx</span><span class="p">(</span><span class="n">semester2_data</span><span class="p">,</span> <span class="n">path</span> <span class="o">=</span> <span class="s2">"data/semester2.xlsx"</span><span class="p">)</span>
+  
+  <span class="c1"># Запис CSV-файлу (readr::write_csv не записує індекси за замовчуванням)</span>
+  <span class="n">readr</span><span class="p">::</span><span class="n">write_csv</span><span class="p">(</span><span class="n">scholarships</span><span class="p">,</span> <span class="s2">"data/scholarships.csv"</span><span class="p">)</span>
+  
+  <span class="n">message</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- R-скрипт успішно створив файли: ---"</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="n">data_dir</span><span class="p">))</span>
+  
+<span class="p">},</span> <span class="n">error</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">message</span><span class="p">(</span><span class="n">paste</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- !!! Виникла помилка під час запису файлів:"</span><span class="p">,</span> <span class="n">e</span><span class="err">$</span><span class="n">message</span><span class="p">,</span> <span class="s2">"---"</span><span class="p">))</span>
+  <span class="n">message</span><span class="p">(</span><span class="s2">"Переконайтеся, що у вас встановлено 'writexl': install.packages('writexl')"</span><span class="p">)</span>
+<span class="p">})</span>
 </pre></div>
 </div>
 </div>
@@ -7646,11 +7650,29 @@ a.anchor-link {
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>Папка data вже існує.
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>Loading required package: tidyverse
 
---- Python-скрипт успішно створив файли: ---
-['scholarships.csv', 'semester1.xlsx', 'semester2.xlsx']
+── <span class="ansi-bold">Attaching core tidyverse packages</span> ──────────────────────── tidyverse 2.0.0 ──
+<span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">dplyr    </span> 1.1.4     <span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">readr    </span> 2.1.5
+<span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">forcats  </span> 1.0.1     <span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">stringr  </span> 1.6.0
+<span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">ggplot2  </span> 4.0.0     <span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">tibble   </span> 3.3.0
+<span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">lubridate</span> 1.9.4     <span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">tidyr    </span> 1.3.1
+<span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">purrr    </span> 1.2.0     
+── <span class="ansi-bold">Conflicts</span> ────────────────────────────────────────── tidyverse_conflicts() ──
+<span class="ansi-red-fg">✖</span> <span class="ansi-blue-fg">dplyr</span>::<span class="ansi-green-fg">filter()</span> masks <span class="ansi-blue-fg">stats</span>::filter()
+<span class="ansi-red-fg">✖</span> <span class="ansi-blue-fg">dplyr</span>::<span class="ansi-green-fg">lag()</span>    masks <span class="ansi-blue-fg">stats</span>::lag()
+<span class="ansi-cyan-fg">ℹ</span> Use the conflicted package (<span class="ansi-blue-fg">&lt;http://conflicted.r-lib.org/&gt;</span>) to force all conflicts to become errors
+Loading required package: writexl
+
+Папка data вже існує.
+
+
+--- R-скрипт успішно створив файли: ---
+
+[1] "goals.csv"            "monthly_reports.xlsx" "scholarships.csv"    
+[4] "semester1.xlsx"       "semester2.xlsx"       "traffic.json"        
+[7] "website_data"        
 </pre>
 </div>
 </div>
@@ -7661,108 +7683,122 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Виконав(ла): Сидоренко Валерій | Група: (ваша група) | Викладач: Сидоренко В.М.</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Виконав(ла): Костін Євгеній | Група: КІ-24-1м | Викладач: Сидоренко В.М.</span>
 
 <span class="c1"># --- 0. ЗАВАНТАЖЕННЯ БІБЛІОТЕК ---</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="c1"># Встановлюємо пакети, якщо їх немає</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span>require<span class="o">(</span><span class="s2">"tidyverse"</span><span class="o">))</span><span class="w"> </span>install.packages<span class="o">(</span><span class="s2">"tidyverse"</span><span class="o">)</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span>require<span class="o">(</span><span class="s2">"readxl"</span><span class="o">))</span><span class="w"> </span>install.packages<span class="o">(</span><span class="s2">"readxl"</span><span class="o">)</span>
 
-<span class="c1"># Переконайтеся, що ви їх встановили:</span>
-<span class="c1"># !pip install pandas openpyxl</span>
+<span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span> <span class="c1"># Для dplyr, readr, tidyr, purrr</span>
+<span class="n">library</span><span class="p">(</span><span class="n">readxl</span><span class="p">)</span>    <span class="c1"># Для читання Excel-файлів</span>
 
 <span class="c1"># --- 1. ЗАВАНТАЖЕННЯ ДАНИХ ---</span>
 
 <span class="c1"># 1.1. Завантажуємо довідник студентів (з S1) та стипендії</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">students_lookup</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">"data/semester1.xlsx"</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s2">"students"</span><span class="p">)</span>
-    <span class="n">scholarships_lookup</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/scholarships.csv"</span><span class="p">)</span>
-    
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"--- 1. Довідники завантажено ---"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">students_lookup</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">scholarships_lookup</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="n">tryCatch</span><span class="p">({</span>
+  <span class="n">students_lookup</span> <span class="o">&lt;-</span> <span class="n">readxl</span><span class="p">::</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">"data/semester1.xlsx"</span><span class="p">,</span> <span class="n">sheet</span> <span class="o">=</span> <span class="s2">"students"</span><span class="p">)</span>
+  <span class="n">scholarships_lookup</span> <span class="o">&lt;-</span> <span class="n">readr</span><span class="p">::</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"data/scholarships.csv"</span><span class="p">)</span>
+  
+  <span class="n">message</span><span class="p">(</span><span class="s2">"--- 1. Довідники завантажено ---"</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="n">head</span><span class="p">(</span><span class="n">students_lookup</span><span class="p">))</span>
+  <span class="n">message</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span> <span class="c1"># Для відступу</span>
+  <span class="nb">print</span><span class="p">(</span><span class="n">head</span><span class="p">(</span><span class="n">scholarships_lookup</span><span class="p">))</span>
+  
+<span class="p">},</span> <span class="n">error</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">message</span><span class="p">(</span><span class="s2">"!!! ПОМИЛКА: Файли з даними не знайдено. Переконайтеся, що Скрипт №1 відпрацював."</span><span class="p">)</span>
+  <span class="c1"># Зупиняємо виконання, якщо файлів немає</span>
+  <span class="n">stop</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="p">})</span>
 
-<span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"!!! ПОМИЛКА: Файли з даними не знайдено. Переконайтеся, що Скрипт №1 відпрацював."</span><span class="p">)</span>
-    <span class="c1"># Зупиняємо виконання, якщо файлів немає</span>
-    <span class="k">raise</span>
 
 <span class="c1"># --- 2. ВЕРТИКАЛЬНЕ ОБ’ЄДНАННЯ (ETL для оцінок) ---</span>
 
 <span class="c1"># 2.1. Функція для завантаження та обробки аркушів з оцінками</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">load_grades</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">semester_name</span><span class="p">):</span>
-    <span class="c1"># Завантажуємо аркуші</span>
-    <span class="n">grades_math</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s2">"grades_math"</span><span class="p">)</span>
-    <span class="n">grades_math</span><span class="p">[</span><span class="s1">'subject'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'math'</span>
+<span class="c1"># (Аналог Python-функції `load_grades`)</span>
+<span class="n">load_grades</span> <span class="o">&lt;-</span> <span class="n">function</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">semester_name</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1"># Завантажуємо аркуші</span>
+  <span class="n">grades_math</span> <span class="o">&lt;-</span> <span class="n">read_excel</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">sheet</span> <span class="o">=</span> <span class="s2">"grades_math"</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">mutate</span><span class="p">(</span><span class="n">subject</span> <span class="o">=</span> <span class="s1">'math'</span><span class="p">)</span>
     
-    <span class="n">grades_physics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s2">"grades_physics"</span><span class="p">)</span>
-    <span class="n">grades_physics</span><span class="p">[</span><span class="s1">'subject'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'physics'</span>
+  <span class="n">grades_physics</span> <span class="o">&lt;-</span> <span class="n">read_excel</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">sheet</span> <span class="o">=</span> <span class="s2">"grades_physics"</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">mutate</span><span class="p">(</span><span class="n">subject</span> <span class="o">=</span> <span class="s1">'physics'</span><span class="p">)</span>
     
-    <span class="n">grades_cs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s2">"grades_cs"</span><span class="p">)</span>
-    <span class="n">grades_cs</span><span class="p">[</span><span class="s1">'subject'</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'cs'</span>
+  <span class="n">grades_cs</span> <span class="o">&lt;-</span> <span class="n">read_excel</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">sheet</span> <span class="o">=</span> <span class="s2">"grades_cs"</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">mutate</span><span class="p">(</span><span class="n">subject</span> <span class="o">=</span> <span class="s1">'cs'</span><span class="p">)</span>
     
-    <span class="c1"># Об'єднуємо їх вертикально</span>
-    <span class="n">semester_grades</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">grades_math</span><span class="p">,</span> <span class="n">grades_physics</span><span class="p">,</span> <span class="n">grades_cs</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">semester_grades</span><span class="p">[</span><span class="s1">'semester'</span><span class="p">]</span> <span class="o">=</span> <span class="n">semester_name</span>
-    <span class="k">return</span> <span class="n">semester_grades</span>
+  <span class="c1"># Об'єднуємо їх вертикально (аналог pd.concat)</span>
+  <span class="n">semester_grades</span> <span class="o">&lt;-</span> <span class="n">dplyr</span><span class="p">::</span><span class="n">bind_rows</span><span class="p">(</span><span class="n">grades_math</span><span class="p">,</span> <span class="n">grades_physics</span><span class="p">,</span> <span class="n">grades_cs</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">mutate</span><span class="p">(</span><span class="n">semester</span> <span class="o">=</span> <span class="n">semester_name</span><span class="p">)</span>
+    
+  <span class="k">return</span><span class="p">(</span><span class="n">semester_grades</span><span class="p">)</span>
+<span class="p">}</span>
 
 <span class="c1"># 2.2. Створюємо grades_s1 та grades_s2</span>
-<span class="n">grades_s1</span> <span class="o">=</span> <span class="n">load_grades</span><span class="p">(</span><span class="s2">"data/semester1.xlsx"</span><span class="p">,</span> <span class="s2">"S1"</span><span class="p">)</span>
-<span class="n">grades_s2</span> <span class="o">=</span> <span class="n">load_grades</span><span class="p">(</span><span class="s2">"data/semester2.xlsx"</span><span class="p">,</span> <span class="s2">"S2"</span><span class="p">)</span>
+<span class="n">grades_s1</span> <span class="o">&lt;-</span> <span class="n">load_grades</span><span class="p">(</span><span class="s2">"data/semester1.xlsx"</span><span class="p">,</span> <span class="s2">"S1"</span><span class="p">)</span>
+<span class="n">grades_s2</span> <span class="o">&lt;-</span> <span class="n">load_grades</span><span class="p">(</span><span class="s2">"data/semester2.xlsx"</span><span class="p">,</span> <span class="s2">"S2"</span><span class="p">)</span>
 
 <span class="c1"># 2.3. Об'єднуємо S1 і S2 у all_grades</span>
-<span class="n">all_grades</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">grades_s1</span><span class="p">,</span> <span class="n">grades_s2</span><span class="p">],</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">all_grades</span> <span class="o">&lt;-</span> <span class="n">dplyr</span><span class="p">::</span><span class="n">bind_rows</span><span class="p">(</span><span class="n">grades_s1</span><span class="p">,</span> <span class="n">grades_s2</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">--- 2. Вертикальне об'єднання (all_grades) ---"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">all_grades</span><span class="o">.</span><span class="n">head</span><span class="p">())</span> <span class="c1"># Перші рядки (S1)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="n">all_grades</span><span class="o">.</span><span class="n">tail</span><span class="p">())</span> <span class="c1"># Останні рядки (S2)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">--- 2. Вертикальне об'єднання (all_grades) ---"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">head</span><span class="p">(</span><span class="n">all_grades</span><span class="p">))</span> <span class="c1"># Перші рядки (S1)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tail</span><span class="p">(</span><span class="n">all_grades</span><span class="p">))</span> <span class="c1"># Останні рядки (S2)</span>
 
 
 <span class="c1"># --- 3. ГОРИЗОНТАЛЬНЕ ОБ’ЄДНАННЯ ---</span>
 
 <span class="c1"># Створюємо єдиний аналітичний датафрейм (ADF)</span>
+<span class="c1"># (Аналог pd.merge(how="left"))</span>
 <span class="c1"># Додаємо інформацію про студентів (left join)</span>
-<span class="n">analytical_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-    <span class="n">all_grades</span><span class="p">,</span>
-    <span class="n">students_lookup</span><span class="p">,</span>
-    <span class="n">on</span><span class="o">=</span><span class="s2">"student_id"</span><span class="p">,</span>
-    <span class="n">how</span><span class="o">=</span><span class="s2">"left"</span>
+<span class="n">analytical_df</span> <span class="o">&lt;-</span> <span class="n">dplyr</span><span class="p">::</span><span class="n">left_join</span><span class="p">(</span>
+  <span class="n">all_grades</span><span class="p">,</span>
+  <span class="n">students_lookup</span><span class="p">,</span>
+  <span class="n">by</span> <span class="o">=</span> <span class="s2">"student_id"</span> <span class="c1"># `by` - аналог `on`</span>
 <span class="p">)</span>
 
 <span class="c1"># Додаємо інформацію про стипендії (left join)</span>
-<span class="n">analytical_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-    <span class="n">analytical_df</span><span class="p">,</span>
-    <span class="n">scholarships_lookup</span><span class="p">,</span>
-    <span class="n">on</span><span class="o">=</span><span class="s2">"student_id"</span><span class="p">,</span>
-    <span class="n">how</span><span class="o">=</span><span class="s2">"left"</span>
+<span class="n">analytical_df</span> <span class="o">&lt;-</span> <span class="n">dplyr</span><span class="p">::</span><span class="n">left_join</span><span class="p">(</span>
+  <span class="n">analytical_df</span><span class="p">,</span>
+  <span class="n">scholarships_lookup</span><span class="p">,</span>
+  <span class="n">by</span> <span class="o">=</span> <span class="s2">"student_id"</span>
 <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">--- 3. Горизонтальне об'єднання (analytical_df) ---"</span><span class="p">)</span>
-<span class="c1"># `amount` буде NaN (Not a Number) для тих, хто не має стипендії</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">--- 3. Горизонтальне об'єднання (analytical_df) ---"</span><span class="p">)</span>
+<span class="c1"># `amount` буде NA (Not Available) для тих, хто не має стипендії</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">analytical_df</span><span class="p">)</span>
 
 
 <span class="c1"># --- 4. АГРЕГАЦІЯ ТА АНАЛІЗ ---</span>
 
-<span class="c1"># 4.1. Розрахунок загального балу</span>
-<span class="n">analytical_df</span><span class="p">[</span><span class="s1">'total_score'</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span> <span class="o">*</span> <span class="n">analytical_df</span><span class="p">[</span><span class="s1">'exam_score'</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="n">analytical_df</span><span class="p">[</span><span class="s1">'project_score'</span><span class="p">]</span>
-
-<span class="c1"># 4.2. Додаємо допоміжні стовпці для агрегації</span>
-<span class="c1"># (True/False перетворюються на 1/0 при .sum() та .mean())</span>
-<span class="n">analytical_df</span><span class="p">[</span><span class="s1">'is_high_achiever'</span><span class="p">]</span> <span class="o">=</span> <span class="n">analytical_df</span><span class="p">[</span><span class="s1">'total_score'</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">90</span>
-<span class="n">analytical_df</span><span class="p">[</span><span class="s1">'has_scholarship'</span><span class="p">]</span> <span class="o">=</span> <span class="n">analytical_df</span><span class="p">[</span><span class="s1">'scholarship_type'</span><span class="p">]</span><span class="o">.</span><span class="n">notna</span><span class="p">()</span> <span class="c1"># True, якщо стипендія є</span>
+<span class="c1"># 4.1. Розрахунок загального балу та допоміжних стовпців</span>
+<span class="c1"># (Аналог df['new_col'] = ...)</span>
+<span class="n">analytical_df</span> <span class="o">&lt;-</span> <span class="n">analytical_df</span> <span class="o">%&gt;%</span>
+  <span class="n">mutate</span><span class="p">(</span>
+    <span class="n">total_score</span> <span class="o">=</span> <span class="mf">0.6</span> <span class="o">*</span> <span class="n">exam_score</span> <span class="o">+</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="n">project_score</span><span class="p">,</span>
+    
+    <span class="c1"># 4.2. Допоміжні стовпці</span>
+    <span class="n">is_high_achiever</span> <span class="o">=</span> <span class="n">total_score</span> <span class="o">&gt;=</span> <span class="mi">90</span><span class="p">,</span>
+    <span class="n">has_scholarship</span> <span class="o">=</span> <span class="o">!</span>is.na<span class="o">(</span>scholarship_type<span class="o">)</span><span class="w"> </span>#<span class="w"> </span>!is.na<span class="o">()</span><span class="w"> </span>-<span class="w"> </span>аналог<span class="w"> </span>.notna<span class="o">()</span>
+  <span class="p">)</span>
 
 <span class="c1"># 4.3. Групування та агрегація</span>
-<span class="n">analysis_by_group_semester</span> <span class="o">=</span> <span class="n">analytical_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'group'</span><span class="p">,</span> <span class="s1">'semester'</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
-    <span class="c1"># 'total_score': 'mean' - старий синтаксис, 'col_name': ('col_name', 'agg_func') - новий</span>
-    <span class="n">mean_total_score</span><span class="o">=</span><span class="p">(</span><span class="s1">'total_score'</span><span class="p">,</span> <span class="s1">'mean'</span><span class="p">),</span>
-    <span class="n">high_achievers_count</span><span class="o">=</span><span class="p">(</span><span class="s1">'is_high_achiever'</span><span class="p">,</span> <span class="s1">'sum'</span><span class="p">),</span>
-    <span class="n">scholarship_share</span><span class="o">=</span><span class="p">(</span><span class="s1">'has_scholarship'</span><span class="p">,</span> <span class="s1">'mean'</span><span class="p">)</span>
-<span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span> <span class="c1"># .reset_index() повертає 'group' і 'semester' у стовпці</span>
+<span class="c1"># (Аналог .groupby().agg().reset_index())</span>
+<span class="n">analysis_by_group_semester</span> <span class="o">&lt;-</span> <span class="n">analytical_df</span> <span class="o">%&gt;%</span>
+  <span class="n">group_by</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">semester</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">summarise</span><span class="p">(</span>
+    <span class="c1"># В R .sum() та .mean() автоматично перетворять TRUE/FALSE на 1/0</span>
+    <span class="n">mean_total_score</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">total_score</span><span class="p">,</span> <span class="n">na</span><span class="o">.</span><span class="n">rm</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">),</span>
+    <span class="n">high_achievers_count</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">is_high_achiever</span><span class="p">,</span> <span class="n">na</span><span class="o">.</span><span class="n">rm</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">),</span>
+    <span class="n">scholarship_share</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">has_scholarship</span><span class="p">,</span> <span class="n">na</span><span class="o">.</span><span class="n">rm</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">),</span>
+    <span class="o">.</span><span class="n">groups</span> <span class="o">=</span> <span class="s1">'drop'</span> <span class="c1"># .groups = 'drop' - аналог .reset_index()</span>
+  <span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">--- 4. Агрегація та Аналіз ---"</span><span class="p">)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">--- 4. Агрегація та Аналіз ---"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">analysis_by_group_semester</span><span class="p">)</span>
 
 
@@ -7771,23 +7807,30 @@ a.anchor-link {
 <span class="c1"># 5.1. Визначення student_id, які отримували стипендію в обох семестрах</span>
 <span class="c1"># Логіка: (Студенти S1 зі стипендією) semi_join (Студенти S2 зі стипендією)</span>
 
-<span class="c1"># Студенти S1 зі стипендією (внутрішнє об'єднання S1 та стипендій)</span>
-<span class="n">s1_schol_students</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-    <span class="n">grades_s1</span><span class="p">,</span> <span class="n">scholarships_lookup</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">'student_id'</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">'inner'</span>
-<span class="p">)[</span><span class="s1">'student_id'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="c1"># Студенти S1 зі стипендією (inner_join - аналог how='inner')</span>
+<span class="c1"># pull() витягує стовпець як вектор (аналог .unique())</span>
+<span class="n">s1_schol_students</span> <span class="o">&lt;-</span> <span class="n">dplyr</span><span class="p">::</span><span class="n">inner_join</span><span class="p">(</span>
+  <span class="n">grades_s1</span><span class="p">,</span> <span class="n">scholarships_lookup</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">'student_id'</span>
+<span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">pull</span><span class="p">(</span><span class="n">student_id</span><span class="p">)</span> <span class="o">%&gt;%</span> <span class="c1"># pull() - аналог [col_name]</span>
+  <span class="n">unique</span><span class="p">()</span>
 
-<span class="c1"># Студенти S2 зі стипендією (внутрішнє об'єднання S2 та стипендій)</span>
-<span class="n">s2_schol_students</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-    <span class="n">grades_s2</span><span class="p">,</span> <span class="n">scholarships_lookup</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">'student_id'</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">'inner'</span>
-<span class="p">)[</span><span class="s1">'student_id'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="c1"># Студенти S2 зі стипендією</span>
+<span class="n">s2_schol_students</span> <span class="o">&lt;-</span> <span class="n">dplyr</span><span class="p">::</span><span class="n">inner_join</span><span class="p">(</span>
+  <span class="n">grades_s2</span><span class="p">,</span> <span class="n">scholarships_lookup</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="s1">'student_id'</span>
+<span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">pull</span><span class="p">(</span><span class="n">student_id</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">unique</span><span class="p">()</span>
 
-<span class="c1"># Емуляція semi_join: беремо ID з s1_schol_students, які є в s2_schol_students</span>
-<span class="n">students_in_both_mask</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">s1_schol_students</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">s2_schol_students</span><span class="p">)</span>
-<span class="n">students_in_both</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="s1">'student_id'</span><span class="p">:</span> <span class="n">s1_schol_students</span><span class="p">[</span><span class="n">students_in_both_mask</span><span class="p">]</span>
-<span class="p">})</span>
+<span class="c1"># Емуляція semi_join: %in% - це прямий аналог .isin()</span>
+<span class="n">students_in_both_mask</span> <span class="o">&lt;-</span> <span class="n">s1_schol_students</span> <span class="o">%</span><span class="k">in</span>% s2_schol_students
+<span class="n">students_in_both_ids</span> <span class="o">&lt;-</span> <span class="n">s1_schol_students</span><span class="p">[</span><span class="n">students_in_both_mask</span><span class="p">]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">--- 5.1. Студенти зі стипендією в обох семестрах (semi_join) ---"</span><span class="p">)</span>
+<span class="n">students_in_both</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="p">(</span>
+  <span class="n">student_id</span> <span class="o">=</span> <span class="n">students_in_both_ids</span>
+<span class="p">)</span>
+
+<span class="n">message</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">--- 5.1. Студенти зі стипендією в обох семестрах (semi_join) ---"</span><span class="p">)</span>
 <span class="c1"># Повинен бути 'S01' (за нашими даними)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">students_in_both</span><span class="p">)</span>
 
@@ -7796,15 +7839,17 @@ a.anchor-link {
 <span class="c1"># Логіка: (Студенти S1 зі стипендією) anti_join (Усі студенти S2)</span>
 
 <span class="c1"># Усі унікальні студенти S2</span>
-<span class="n">s2_all_students_ids</span> <span class="o">=</span> <span class="n">grades_s2</span><span class="p">[</span><span class="s1">'student_id'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="n">s2_all_students_ids</span> <span class="o">&lt;-</span> <span class="n">unique</span><span class="p">(</span><span class="n">grades_s2</span><span class="err">$</span><span class="n">student_id</span><span class="p">)</span>
 
-<span class="c1"># Емуляція anti_join: беремо ID з s1_schol_students, яких НЕМАЄ в s2_all_students_ids</span>
-<span class="n">lost_students_mask</span> <span class="o">=</span> <span class="o">~</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">s1_schol_students</span><span class="p">)</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">s2_all_students_ids</span><span class="p">)</span>
-<span class="n">lost_scholarship_students</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-    <span class="s1">'student_id'</span><span class="p">:</span> <span class="n">s1_schol_students</span><span class="p">[</span><span class="n">lost_students_mask</span><span class="p">]</span>
-<span class="p">})</span>
+<span class="c1"># Емуляція anti_join: ! - це аналог ~ (not)</span>
+<span class="n">lost_students_mask</span> <span class="o">&lt;-</span> <span class="o">!(</span>s1_schol_students<span class="w"> </span>%in%<span class="w"> </span>s2_all_students_ids<span class="o">)</span>
+<span class="n">lost_scholarship_students_ids</span> <span class="o">&lt;-</span> <span class="n">s1_schol_students</span><span class="p">[</span><span class="n">lost_students_mask</span><span class="p">]</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">--- 5.2. Студенти, що втратили стипендію (S1+schol, anti_join S2) ---"</span><span class="p">)</span>
+<span class="n">lost_scholarship_students</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="p">(</span>
+  <span class="n">student_id</span> <span class="o">=</span> <span class="n">lost_scholarship_students_ids</span>
+<span class="p">)</span>
+
+<span class="n">message</span><span class="p">(</span><span class="s2">"</span><span class="se">\n\n</span><span class="s2">--- 5.2. Студенти, що втратили стипендію (S1+schol, anti_join S2) ---"</span><span class="p">)</span>
 <span class="c1"># Повинен бути 'S03' (за нашими даними)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">lost_scholarship_students</span><span class="p">)</span>
 </pre></div>
@@ -7818,107 +7863,108 @@ a.anchor-link {
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>--- 1. Довідники завантажено ---
-  student_id          full_name  group faculty
-0        S01     Іваненко Петро  IT-21    FICT
-1        S02    Коваленко Марія  IT-21    FICT
-2        S03  Сидоренко Валерій  IT-22    FICT
-3        S04      Мельник Олена  IT-22    FICT
-4        S05     Кравчук Андрій  IT-21    FICT
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>Loading required package: readxl
 
-   student_id scholarship_type  amount
-0        S01         academic    2000
-1        S03         academic    2000
-2        S05           social    1500
+<span class="ansi-bold">Rows: </span><span class="ansi-blue-fg">3</span> <span class="ansi-bold">Columns: </span><span class="ansi-blue-fg">3</span>
+<span class="ansi-cyan-fg">──</span> <span class="ansi-bold">Column specification</span> <span class="ansi-cyan-fg">────────────────────────────────────────────────────────</span>
+<span class="ansi-bold">Delimiter:</span> ","
+<span class="ansi-red-fg">chr</span> (2): student_id, scholarship_type
+<span class="ansi-green-fg">dbl</span> (1): amount
+
+<span class="ansi-cyan-fg">ℹ</span> Use `spec()` to retrieve the full column specification for this data.
+<span class="ansi-cyan-fg">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.
+--- 1. Довідники завантажено ---
+
+<span class="ansi-black-intense-fg"># A tibble: 6 × 4</span>
+  student_id full_name         group faculty
+  <span class="ansi-black-intense-fg">&lt;chr&gt;</span>      <span class="ansi-black-intense-fg">&lt;chr&gt;</span>             <span class="ansi-black-intense-fg">&lt;chr&gt;</span> <span class="ansi-black-intense-fg">&lt;chr&gt;</span>  
+<span class="ansi-black-intense-fg">1</span> S01        Іваненко Петро    IT-21 FICT   
+<span class="ansi-black-intense-fg">2</span> S02        Коваленко Марія   IT-21 FICT   
+<span class="ansi-black-intense-fg">3</span> S03        Сидоренко Валерій IT-22 FICT   
+<span class="ansi-black-intense-fg">4</span> S04        Мельник Олена     IT-22 FICT   
+<span class="ansi-black-intense-fg">5</span> S05        Кравчук Андрій    IT-21 FICT   
+<span class="ansi-black-intense-fg">6</span> S06        Лисенко Ірина     IT-22 FICT   
+
+
+
+<span class="ansi-black-intense-fg"># A tibble: 3 × 3</span>
+  student_id scholarship_type amount
+  <span class="ansi-black-intense-fg">&lt;chr&gt;</span>      <span class="ansi-black-intense-fg">&lt;chr&gt;</span>             <span class="ansi-black-intense-fg">&lt;dbl&gt;</span>
+<span class="ansi-black-intense-fg">1</span> S01        academic           <span class="ansi-underline">2</span>000
+<span class="ansi-black-intense-fg">2</span> S03        academic           <span class="ansi-underline">2</span>000
+<span class="ansi-black-intense-fg">3</span> S05        social             <span class="ansi-underline">1</span>500
 
 
 --- 2. Вертикальне об'єднання (all_grades) ---
-  student_id  exam_score  project_score  subject semester
-0        S01          85             90     math       S1
-1        S02          92             88     math       S1
-2        S03          77             80     math       S1
-3        S04          60             65     math       S1
-4        S01          95             90  physics       S1
 
-    student_id  exam_score  project_score  subject semester
-19        S06          88             85  physics       S2
-20        S01          98             90       cs       S2
-21        S02          92             90       cs       S2
-22        S05          80             85       cs       S2
-23        S06          85             88       cs       S2
+<span class="ansi-black-intense-fg"># A tibble: 6 × 5</span>
+  student_id exam_score project_score subject semester
+  <span class="ansi-black-intense-fg">&lt;chr&gt;</span>           <span class="ansi-black-intense-fg">&lt;dbl&gt;</span>         <span class="ansi-black-intense-fg">&lt;dbl&gt;</span> <span class="ansi-black-intense-fg">&lt;chr&gt;</span>   <span class="ansi-black-intense-fg">&lt;chr&gt;</span>   
+<span class="ansi-black-intense-fg">1</span> S01                85            90 math    S1      
+<span class="ansi-black-intense-fg">2</span> S02                92            88 math    S1      
+<span class="ansi-black-intense-fg">3</span> S03                77            80 math    S1      
+<span class="ansi-black-intense-fg">4</span> S04                60            65 math    S1      
+<span class="ansi-black-intense-fg">5</span> S01                95            90 physics S1      
+<span class="ansi-black-intense-fg">6</span> S02                80            85 physics S1      
+
+
+
+<span class="ansi-black-intense-fg"># A tibble: 6 × 5</span>
+  student_id exam_score project_score subject semester
+  <span class="ansi-black-intense-fg">&lt;chr&gt;</span>           <span class="ansi-black-intense-fg">&lt;dbl&gt;</span>         <span class="ansi-black-intense-fg">&lt;dbl&gt;</span> <span class="ansi-black-intense-fg">&lt;chr&gt;</span>   <span class="ansi-black-intense-fg">&lt;chr&gt;</span>   
+<span class="ansi-black-intense-fg">1</span> S05                78            82 physics S2      
+<span class="ansi-black-intense-fg">2</span> S06                88            85 physics S2      
+<span class="ansi-black-intense-fg">3</span> S01                98            90 cs      S2      
+<span class="ansi-black-intense-fg">4</span> S02                92            90 cs      S2      
+<span class="ansi-black-intense-fg">5</span> S05                80            85 cs      S2      
+<span class="ansi-black-intense-fg">6</span> S06                85            88 cs      S2      
 
 
 --- 3. Горизонтальне об'єднання (analytical_df) ---
-   student_id  exam_score  project_score  subject semester          full_name  \
-0         S01          85             90     math       S1     Іваненко Петро   
-1         S02          92             88     math       S1    Коваленко Марія   
-2         S03          77             80     math       S1  Сидоренко Валерій   
-3         S04          60             65     math       S1      Мельник Олена   
-4         S01          95             90  physics       S1     Іваненко Петро   
-5         S02          80             85  physics       S1    Коваленко Марія   
-6         S03          82             80  physics       S1  Сидоренко Валерій   
-7         S04          70             75  physics       S1      Мельник Олена   
-8         S01         100             95       cs       S1     Іваненко Петро   
-9         S02          90             92       cs       S1    Коваленко Марія   
-10        S03          95             90       cs       S1  Сидоренко Валерій   
-11        S04          80             85       cs       S1      Мельник Олена   
-12        S01          88             92     math       S2     Іваненко Петро   
-13        S02          90             85     math       S2    Коваленко Марія   
-14        S05          75             80     math       S2     Кравчук Андрій   
-15        S06          82             80     math       S2      Лисенко Ірина   
-16        S01          90             95  physics       S2     Іваненко Петро   
-17        S02          82             80  physics       S2    Коваленко Марія   
-18        S05          78             82  physics       S2     Кравчук Андрій   
-19        S06          88             85  physics       S2      Лисенко Ірина   
-20        S01          98             90       cs       S2     Іваненко Петро   
-21        S02          92             90       cs       S2    Коваленко Марія   
-22        S05          80             85       cs       S2     Кравчук Андрій   
-23        S06          85             88       cs       S2      Лисенко Ірина   
 
-    group faculty scholarship_type  amount  
-0   IT-21    FICT         academic  2000.0  
-1   IT-21    FICT              NaN     NaN  
-2   IT-22    FICT         academic  2000.0  
-3   IT-22    FICT              NaN     NaN  
-4   IT-21    FICT         academic  2000.0  
-5   IT-21    FICT              NaN     NaN  
-6   IT-22    FICT         academic  2000.0  
-7   IT-22    FICT              NaN     NaN  
-8   IT-21    FICT         academic  2000.0  
-9   IT-21    FICT              NaN     NaN  
-10  IT-22    FICT         academic  2000.0  
-11  IT-22    FICT              NaN     NaN  
-12  IT-21    FICT         academic  2000.0  
-13  IT-21    FICT              NaN     NaN  
-14  IT-21    FICT           social  1500.0  
-15  IT-22    FICT              NaN     NaN  
-16  IT-21    FICT         academic  2000.0  
-17  IT-21    FICT              NaN     NaN  
-18  IT-21    FICT           social  1500.0  
-19  IT-22    FICT              NaN     NaN  
-20  IT-21    FICT         academic  2000.0  
-21  IT-21    FICT              NaN     NaN  
-22  IT-21    FICT           social  1500.0  
-23  IT-22    FICT              NaN     NaN  
+<span class="ansi-black-intense-fg"># A tibble: 24 × 10</span>
+   student_id exam_score project_score subject semester full_name  group faculty
+   <span class="ansi-black-intense-fg">&lt;chr&gt;</span>           <span class="ansi-black-intense-fg">&lt;dbl&gt;</span>         <span class="ansi-black-intense-fg">&lt;dbl&gt;</span> <span class="ansi-black-intense-fg">&lt;chr&gt;</span>   <span class="ansi-black-intense-fg">&lt;chr&gt;</span>    <span class="ansi-black-intense-fg">&lt;chr&gt;</span>      <span class="ansi-black-intense-fg">&lt;chr&gt;</span> <span class="ansi-black-intense-fg">&lt;chr&gt;</span>  
+<span class="ansi-black-intense-fg"> 1</span> S01                85            90 math    S1       Іваненко … IT-21 FICT   
+<span class="ansi-black-intense-fg"> 2</span> S02                92            88 math    S1       Коваленко… IT-21 FICT   
+<span class="ansi-black-intense-fg"> 3</span> S03                77            80 math    S1       Сидоренко… IT-22 FICT   
+<span class="ansi-black-intense-fg"> 4</span> S04                60            65 math    S1       Мельник О… IT-22 FICT   
+<span class="ansi-black-intense-fg"> 5</span> S01                95            90 physics S1       Іваненко … IT-21 FICT   
+<span class="ansi-black-intense-fg"> 6</span> S02                80            85 physics S1       Коваленко… IT-21 FICT   
+<span class="ansi-black-intense-fg"> 7</span> S03                82            80 physics S1       Сидоренко… IT-22 FICT   
+<span class="ansi-black-intense-fg"> 8</span> S04                70            75 physics S1       Мельник О… IT-22 FICT   
+<span class="ansi-black-intense-fg"> 9</span> S01               100            95 cs      S1       Іваненко … IT-21 FICT   
+<span class="ansi-black-intense-fg">10</span> S02                90            92 cs      S1       Коваленко… IT-21 FICT   
+<span class="ansi-black-intense-fg"># ℹ 14 more rows</span>
+<span class="ansi-black-intense-fg"># ℹ 2 more variables: scholarship_type &lt;chr&gt;, amount &lt;dbl&gt;</span>
 
 
 --- 4. Агрегація та Аналіз ---
-   group semester  mean_total_score  high_achievers_count  scholarship_share
-0  IT-21       S1         90.200000                     4           0.500000
-1  IT-21       S2         86.155556                     3           0.666667
-2  IT-22       S1         78.066667                     1           0.500000
-3  IT-22       S2         84.733333                     0           0.000000
+
+<span class="ansi-black-intense-fg"># A tibble: 4 × 5</span>
+  group semester mean_total_score high_achievers_count scholarship_share
+  <span class="ansi-black-intense-fg">&lt;chr&gt;</span> <span class="ansi-black-intense-fg">&lt;chr&gt;</span>               <span class="ansi-black-intense-fg">&lt;dbl&gt;</span>                <span class="ansi-black-intense-fg">&lt;int&gt;</span>             <span class="ansi-black-intense-fg">&lt;dbl&gt;</span>
+<span class="ansi-black-intense-fg">1</span> IT-21 S1                   90.2                    4             0.5  
+<span class="ansi-black-intense-fg">2</span> IT-21 S2                   86.2                    3             0.667
+<span class="ansi-black-intense-fg">3</span> IT-22 S1                   78.1                    1             0.5  
+<span class="ansi-black-intense-fg">4</span> IT-22 S2                   84.7                    0             0    
 
 
 --- 5.1. Студенти зі стипендією в обох семестрах (semi_join) ---
+
+<span class="ansi-black-intense-fg"># A tibble: 1 × 1</span>
   student_id
-0        S01
+  <span class="ansi-black-intense-fg">&lt;chr&gt;</span>     
+<span class="ansi-black-intense-fg">1</span> S01       
 
 
 --- 5.2. Студенти, що втратили стипендію (S1+schol, anti_join S2) ---
+
+<span class="ansi-black-intense-fg"># A tibble: 1 × 1</span>
   student_id
-0        S03
+  <span class="ansi-black-intense-fg">&lt;chr&gt;</span>     
+<span class="ansi-black-intense-fg">1</span> S03       
 </pre>
 </div>
 </div>

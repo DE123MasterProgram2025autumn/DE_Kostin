@@ -7563,220 +7563,243 @@ a.anchor-link {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Виконав(ла): Костін Євгеній | Група: КІ-24-1м | Викладач: Сидоренко В.М.</span>
-<span class="c1"># Лабораторна робота №3: Єдиний скрипт (Генерація + Рішення)</span>
+<span class="c1"># Лабораторна робота №3: Єдиний скрипт (Генерація + Рішення) - R-версія</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="c1"># --- 0. ПІДКЛЮЧЕННЯ БІБЛІОТЕК ---</span>
+<span class="c1"># Встановлюємо пакети, якщо їх немає</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span>require<span class="o">(</span><span class="s2">"tidyverse"</span><span class="o">))</span><span class="w"> </span>install.packages<span class="o">(</span><span class="s2">"tidyverse"</span><span class="o">)</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span>require<span class="o">(</span><span class="s2">"jsonlite"</span><span class="o">))</span><span class="w"> </span>install.packages<span class="o">(</span><span class="s2">"jsonlite"</span><span class="o">)</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span>require<span class="o">(</span><span class="s2">"readxl"</span><span class="o">))</span><span class="w"> </span>install.packages<span class="o">(</span><span class="s2">"readxl"</span><span class="o">)</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span>require<span class="o">(</span><span class="s2">"writexl"</span><span class="o">))</span><span class="w"> </span>install.packages<span class="o">(</span><span class="s2">"writexl"</span><span class="o">)</span>
+
+<span class="n">library</span><span class="p">(</span><span class="n">tidyverse</span><span class="p">)</span>
+<span class="n">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span>
+<span class="n">library</span><span class="p">(</span><span class="n">readxl</span><span class="p">)</span>
+<span class="n">library</span><span class="p">(</span><span class="n">writexl</span><span class="p">)</span>
 
 <span class="c1"># --- ЕТАП 0: ГЕНЕРАЦІЯ ДАНИХ (Setup) ---</span>
-<span class="c1"># Ця частина створює файли, які будуть потрібні для Етапів 1-4</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">"--- ЕТАП 0: СТВОРЕННЯ ВИХІДНИХ ФАЙЛІВ ---"</span><span class="p">)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"--- ЕТАП 0: СТВОРЕННЯ ВИХІДНИХ ФАЙЛІВ ---"</span><span class="p">)</span>
 
 <span class="c1"># --- 1. НАЛАШТУВАННЯ ТА СТВОРЕННЯ ПАПКИ ---</span>
-<span class="n">data_dir</span> <span class="o">=</span> <span class="s2">"data"</span>
-<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">data_dir</span><span class="p">):</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Створено папку: </span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Папка </span><span class="si">{</span><span class="n">data_dir</span><span class="si">}</span><span class="s2"> вже існує."</span><span class="p">)</span>
+<span class="n">data_dir</span> <span class="o">&lt;-</span> <span class="s2">"data"</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span>dir.exists<span class="o">(</span>data_dir<span class="o">))</span><span class="w"> </span><span class="o">{</span>
+  <span class="nb">dir</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span>
+  <span class="n">message</span><span class="p">(</span><span class="n">paste</span><span class="p">(</span><span class="s2">"Створено папку:"</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">))</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+  <span class="n">message</span><span class="p">(</span><span class="n">paste</span><span class="p">(</span><span class="s2">"Папка"</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">,</span> <span class="s2">"вже існує."</span><span class="p">))</span>
+<span class="p">}</span>
 
 <span class="c1"># --- 2. ГЕНЕРАЦІЯ ДАНИХ ---</span>
 
 <span class="c1"># 2.1. traffic.json</span>
-<span class="n">traffic_data</span> <span class="o">=</span> <span class="p">[</span>
-  <span class="p">{</span>
-    <span class="s2">"date"</span><span class="p">:</span> <span class="s2">"2024-01-05"</span><span class="p">,</span> <span class="s2">"page_views"</span><span class="p">:</span> <span class="mi">1250</span><span class="p">,</span> <span class="s2">"unique_users"</span><span class="p">:</span> <span class="mi">840</span><span class="p">,</span> <span class="s2">"bounce_rate"</span><span class="p">:</span> <span class="mf">0.42</span><span class="p">,</span>
-    <span class="s2">"campaigns"</span><span class="p">:</span> <span class="p">[</span>
-      <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"google_ads"</span><span class="p">,</span> <span class="s2">"channel"</span><span class="p">:</span> <span class="s2">"paid_search"</span><span class="p">,</span> <span class="s2">"cost"</span><span class="p">:</span> <span class="mi">120</span><span class="p">},</span>
-      <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"email_jan"</span><span class="p">,</span> <span class="s2">"channel"</span><span class="p">:</span> <span class="s2">"email"</span><span class="p">,</span> <span class="s2">"cost"</span><span class="p">:</span> <span class="mi">50</span><span class="p">}</span>
-    <span class="p">]</span>
-  <span class="p">},</span>
-  <span class="p">{</span>
-    <span class="s2">"date"</span><span class="p">:</span> <span class="s2">"2024-01-15"</span><span class="p">,</span> <span class="s2">"page_views"</span><span class="p">:</span> <span class="mi">1300</span><span class="p">,</span> <span class="s2">"unique_users"</span><span class="p">:</span> <span class="mi">900</span><span class="p">,</span> <span class="s2">"bounce_rate"</span><span class="p">:</span> <span class="mf">0.40</span><span class="p">,</span>
-    <span class="s2">"campaigns"</span><span class="p">:</span> <span class="p">[</span>
-      <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"google_ads"</span><span class="p">,</span> <span class="s2">"channel"</span><span class="p">:</span> <span class="s2">"paid_search"</span><span class="p">,</span> <span class="s2">"cost"</span><span class="p">:</span> <span class="mi">130</span><span class="p">},</span>
-      <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"facebook_jan"</span><span class="p">,</span> <span class="s2">"channel"</span><span class="p">:</span> <span class="s2">"social"</span><span class="p">,</span> <span class="s2">"cost"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span> <span class="c1"># Вартість 0</span>
-    <span class="p">]</span>
-  <span class="p">},</span>
-  <span class="p">{</span>
-    <span class="s2">"date"</span><span class="p">:</span> <span class="s2">"2024-02-05"</span><span class="p">,</span> <span class="s2">"page_views"</span><span class="p">:</span> <span class="mi">1100</span><span class="p">,</span> <span class="s2">"unique_users"</span><span class="p">:</span> <span class="mi">750</span><span class="p">,</span> <span class="s2">"bounce_rate"</span><span class="p">:</span> <span class="mf">0.45</span><span class="p">,</span> <span class="c1"># Bounce rate зріс</span>
-    <span class="s2">"campaigns"</span><span class="p">:</span> <span class="p">[</span>
-      <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"google_ads"</span><span class="p">,</span> <span class="s2">"channel"</span><span class="p">:</span> <span class="s2">"paid_search"</span><span class="p">,</span> <span class="s2">"cost"</span><span class="p">:</span> <span class="mi">110</span><span class="p">},</span>
-      <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"email_feb"</span><span class="p">,</span> <span class="s2">"channel"</span><span class="p">:</span> <span class="s2">"email"</span><span class="p">,</span> <span class="s2">"cost"</span><span class="p">:</span> <span class="mi">40</span><span class="p">}</span>
-    <span class="p">]</span>
-  <span class="p">},</span>
-  <span class="p">{</span>
-    <span class="s2">"date"</span><span class="p">:</span> <span class="s2">"2024-02-15"</span><span class="p">,</span> <span class="s2">"page_views"</span><span class="p">:</span> <span class="mi">1150</span><span class="p">,</span> <span class="s2">"unique_users"</span><span class="p">:</span> <span class="mi">780</span><span class="p">,</span> <span class="s2">"bounce_rate"</span><span class="p">:</span> <span class="mf">0.44</span><span class="p">,</span>
-    <span class="s2">"campaigns"</span><span class="p">:</span> <span class="p">[</span>
-      <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"google_ads"</span><span class="p">,</span> <span class="s2">"channel"</span><span class="p">:</span> <span class="s2">"paid_search"</span><span class="p">,</span> <span class="s2">"cost"</span><span class="p">:</span> <span class="mi">115</span><span class="p">}</span>
-    <span class="p">]</span>
-  <span class="p">},</span>
-    <span class="p">{</span>
-    <span class="s2">"date"</span><span class="p">:</span> <span class="s2">"2024-03-05"</span><span class="p">,</span> <span class="s2">"page_views"</span><span class="p">:</span> <span class="mi">1400</span><span class="p">,</span> <span class="s2">"unique_users"</span><span class="p">:</span> <span class="mi">950</span><span class="p">,</span> <span class="s2">"bounce_rate"</span><span class="p">:</span> <span class="mf">0.38</span><span class="p">,</span> <span class="c1"># Bounce rate впав</span>
-    <span class="s2">"campaigns"</span><span class="p">:</span> <span class="p">[</span>
-      <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"google_ads"</span><span class="p">,</span> <span class="s2">"channel"</span><span class="p">:</span> <span class="s2">"paid_search"</span><span class="p">,</span> <span class="s2">"cost"</span><span class="p">:</span> <span class="mi">140</span><span class="p">},</span>
-      <span class="p">{</span><span class="s2">"name"</span><span class="p">:</span> <span class="s2">"email_mar"</span><span class="p">,</span> <span class="s2">"channel"</span><span class="p">:</span> <span class="s2">"email"</span><span class="p">,</span> <span class="s2">"cost"</span><span class="p">:</span> <span class="mi">55</span><span class="p">}</span>
-    <span class="p">]</span>
-  <span class="p">}</span>
-<span class="p">]</span>
+<span class="c1"># (Використовуємо R-списки, які є аналогами Python-словників)</span>
+<span class="n">traffic_data</span> <span class="o">&lt;-</span> <span class="nb">list</span><span class="p">(</span>
+  <span class="nb">list</span><span class="p">(</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="s2">"2024-01-05"</span><span class="p">,</span> <span class="n">page_views</span> <span class="o">=</span> <span class="mi">1250</span><span class="p">,</span> <span class="n">unique_users</span> <span class="o">=</span> <span class="mi">840</span><span class="p">,</span> <span class="n">bounce_rate</span> <span class="o">=</span> <span class="mf">0.42</span><span class="p">,</span>
+    <span class="n">campaigns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+      <span class="nb">list</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"google_ads"</span><span class="p">,</span> <span class="n">channel</span> <span class="o">=</span> <span class="s2">"paid_search"</span><span class="p">,</span> <span class="n">cost</span> <span class="o">=</span> <span class="mi">120</span><span class="p">),</span>
+      <span class="nb">list</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"email_jan"</span><span class="p">,</span> <span class="n">channel</span> <span class="o">=</span> <span class="s2">"email"</span><span class="p">,</span> <span class="n">cost</span> <span class="o">=</span> <span class="mi">50</span><span class="p">)</span>
+    <span class="p">)</span>
+  <span class="p">),</span>
+  <span class="nb">list</span><span class="p">(</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="s2">"2024-01-15"</span><span class="p">,</span> <span class="n">page_views</span> <span class="o">=</span> <span class="mi">1300</span><span class="p">,</span> <span class="n">unique_users</span> <span class="o">=</span> <span class="mi">900</span><span class="p">,</span> <span class="n">bounce_rate</span> <span class="o">=</span> <span class="mf">0.40</span><span class="p">,</span>
+    <span class="n">campaigns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+      <span class="nb">list</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"google_ads"</span><span class="p">,</span> <span class="n">channel</span> <span class="o">=</span> <span class="s2">"paid_search"</span><span class="p">,</span> <span class="n">cost</span> <span class="o">=</span> <span class="mi">130</span><span class="p">),</span>
+      <span class="nb">list</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"facebook_jan"</span><span class="p">,</span> <span class="n">channel</span> <span class="o">=</span> <span class="s2">"social"</span><span class="p">,</span> <span class="n">cost</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="c1"># Вартість 0</span>
+    <span class="p">)</span>
+  <span class="p">),</span>
+  <span class="nb">list</span><span class="p">(</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="s2">"2024-02-05"</span><span class="p">,</span> <span class="n">page_views</span> <span class="o">=</span> <span class="mi">1100</span><span class="p">,</span> <span class="n">unique_users</span> <span class="o">=</span> <span class="mi">750</span><span class="p">,</span> <span class="n">bounce_rate</span> <span class="o">=</span> <span class="mf">0.45</span><span class="p">,</span> <span class="c1"># Bounce rate зріс</span>
+    <span class="n">campaigns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+      <span class="nb">list</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"google_ads"</span><span class="p">,</span> <span class="n">channel</span> <span class="o">=</span> <span class="s2">"paid_search"</span><span class="p">,</span> <span class="n">cost</span> <span class="o">=</span> <span class="mi">110</span><span class="p">),</span>
+      <span class="nb">list</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"email_feb"</span><span class="p">,</span> <span class="n">channel</span> <span class="o">=</span> <span class="s2">"email"</span><span class="p">,</span> <span class="n">cost</span> <span class="o">=</span> <span class="mi">40</span><span class="p">)</span>
+    <span class="p">)</span>
+  <span class="p">),</span>
+  <span class="nb">list</span><span class="p">(</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="s2">"2024-02-15"</span><span class="p">,</span> <span class="n">page_views</span> <span class="o">=</span> <span class="mi">1150</span><span class="p">,</span> <span class="n">unique_users</span> <span class="o">=</span> <span class="mi">780</span><span class="p">,</span> <span class="n">bounce_rate</span> <span class="o">=</span> <span class="mf">0.44</span><span class="p">,</span>
+    <span class="n">campaigns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+      <span class="nb">list</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"google_ads"</span><span class="p">,</span> <span class="n">channel</span> <span class="o">=</span> <span class="s2">"paid_search"</span><span class="p">,</span> <span class="n">cost</span> <span class="o">=</span> <span class="mi">115</span><span class="p">)</span>
+    <span class="p">)</span>
+  <span class="p">),</span>
+  <span class="nb">list</span><span class="p">(</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="s2">"2024-03-05"</span><span class="p">,</span> <span class="n">page_views</span> <span class="o">=</span> <span class="mi">1400</span><span class="p">,</span> <span class="n">unique_users</span> <span class="o">=</span> <span class="mi">950</span><span class="p">,</span> <span class="n">bounce_rate</span> <span class="o">=</span> <span class="mf">0.38</span><span class="p">,</span> <span class="c1"># Bounce rate впав</span>
+    <span class="n">campaigns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+      <span class="nb">list</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"google_ads"</span><span class="p">,</span> <span class="n">channel</span> <span class="o">=</span> <span class="s2">"paid_search"</span><span class="p">,</span> <span class="n">cost</span> <span class="o">=</span> <span class="mi">140</span><span class="p">),</span>
+      <span class="nb">list</span><span class="p">(</span><span class="n">name</span> <span class="o">=</span> <span class="s2">"email_mar"</span><span class="p">,</span> <span class="n">channel</span> <span class="o">=</span> <span class="s2">"email"</span><span class="p">,</span> <span class="n">cost</span> <span class="o">=</span> <span class="mi">55</span><span class="p">)</span>
+    <span class="p">)</span>
+  <span class="p">)</span>
+<span class="p">)</span>
 
 <span class="c1"># Запис JSON-файлу</span>
-<span class="n">json_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">'traffic.json'</span><span class="p">)</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">traffic_data</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Файл 'traffic.json' створено."</span><span class="p">)</span>
+<span class="n">json_path</span> <span class="o">&lt;-</span> <span class="n">file</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s2">"traffic.json"</span><span class="p">)</span>
+<span class="c1"># auto_unbox = TRUE робить [120] -&gt; 120, pretty = TRUE додає відступи</span>
+<span class="n">jsonlite</span><span class="p">::</span><span class="n">write_json</span><span class="p">(</span><span class="n">traffic_data</span><span class="p">,</span> <span class="n">json_path</span><span class="p">,</span> <span class="n">auto_unbox</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">,</span> <span class="n">pretty</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"Файл 'traffic.json' створено."</span><span class="p">)</span>
 
 <span class="c1"># 2.2. monthly_reports.xlsx</span>
-<span class="n">df_jan</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">'page'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'/home'</span><span class="p">,</span> <span class="s1">'/products'</span><span class="p">,</span> <span class="s1">'/contact'</span><span class="p">],</span> <span class="s1">'sessions'</span><span class="p">:</span> <span class="p">[</span><span class="mi">15000</span><span class="p">,</span> <span class="mi">8000</span><span class="p">,</span> <span class="mi">1500</span><span class="p">],</span> <span class="s1">'avg_duration_sec'</span><span class="p">:</span> <span class="p">[</span><span class="mi">120</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">90</span><span class="p">]})</span>
-<span class="n">df_feb</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">'page'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'/home'</span><span class="p">,</span> <span class="s1">'/products'</span><span class="p">,</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="s1">'/blog'</span><span class="p">],</span> <span class="s1">'sessions'</span><span class="p">:</span> <span class="p">[</span><span class="mi">13000</span><span class="p">,</span> <span class="mi">7500</span><span class="p">,</span> <span class="mi">1400</span><span class="p">,</span> <span class="mi">1000</span><span class="p">],</span> <span class="s1">'avg_duration_sec'</span><span class="p">:</span> <span class="p">[</span><span class="mi">110</span><span class="p">,</span> <span class="mi">175</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">200</span><span class="p">]})</span>
-<span class="n">df_mar</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">'page'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'/home'</span><span class="p">,</span> <span class="s1">'/products'</span><span class="p">,</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="s1">'/blog'</span><span class="p">],</span> <span class="s1">'sessions'</span><span class="p">:</span> <span class="p">[</span><span class="mi">16000</span><span class="p">,</span> <span class="mi">8500</span><span class="p">,</span> <span class="mi">1600</span><span class="p">,</span> <span class="mi">1200</span><span class="p">],</span> <span class="s1">'avg_duration_sec'</span><span class="p">:</span> <span class="p">[</span><span class="mi">125</span><span class="p">,</span> <span class="mi">185</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">210</span><span class="p">]})</span>
+<span class="n">df_jan</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="p">(</span><span class="n">page</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s1">'/home'</span><span class="p">,</span> <span class="s1">'/products'</span><span class="p">,</span> <span class="s1">'/contact'</span><span class="p">),</span> <span class="n">sessions</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">15000</span><span class="p">,</span> <span class="mi">8000</span><span class="p">,</span> <span class="mi">1500</span><span class="p">),</span> <span class="n">avg_duration_sec</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="mi">180</span><span class="p">,</span> <span class="mi">90</span><span class="p">))</span>
+<span class="n">df_feb</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="p">(</span><span class="n">page</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s1">'/home'</span><span class="p">,</span> <span class="s1">'/products'</span><span class="p">,</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="s1">'/blog'</span><span class="p">),</span> <span class="n">sessions</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">13000</span><span class="p">,</span> <span class="mi">7500</span><span class="p">,</span> <span class="mi">1400</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span> <span class="n">avg_duration_sec</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="mi">175</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>
+<span class="n">df_mar</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="p">(</span><span class="n">page</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s1">'/home'</span><span class="p">,</span> <span class="s1">'/products'</span><span class="p">,</span> <span class="s1">'/contact'</span><span class="p">,</span> <span class="s1">'/blog'</span><span class="p">),</span> <span class="n">sessions</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">16000</span><span class="p">,</span> <span class="mi">8500</span><span class="p">,</span> <span class="mi">1600</span><span class="p">,</span> <span class="mi">1200</span><span class="p">),</span> <span class="n">avg_duration_sec</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">125</span><span class="p">,</span> <span class="mi">185</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">210</span><span class="p">))</span>
 
-<span class="n">excel_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">'monthly_reports.xlsx'</span><span class="p">)</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="k">with</span> <span class="n">pd</span><span class="o">.</span><span class="n">ExcelWriter</span><span class="p">(</span><span class="n">excel_path</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">'openpyxl'</span><span class="p">)</span> <span class="k">as</span> <span class="n">writer</span><span class="p">:</span>
-        <span class="n">df_jan</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">'jan'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">df_feb</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">'feb'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">df_mar</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="s1">'mar'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Файл 'monthly_reports.xlsx' створено."</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Помилка запису Excel: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. (Можливо, потрібно: !pip install openpyxl)"</span><span class="p">)</span>
+<span class="n">excel_path</span> <span class="o">&lt;-</span> <span class="n">file</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s2">"monthly_reports.xlsx"</span><span class="p">)</span>
+<span class="c1"># writexl::write_xlsx елегантно приймає іменований список</span>
+<span class="n">tryCatch</span><span class="p">({</span>
+  <span class="n">writexl</span><span class="p">::</span><span class="n">write_xlsx</span><span class="p">(</span>
+    <span class="nb">list</span><span class="p">(</span><span class="n">jan</span> <span class="o">=</span> <span class="n">df_jan</span><span class="p">,</span> <span class="n">feb</span> <span class="o">=</span> <span class="n">df_feb</span><span class="p">,</span> <span class="n">mar</span> <span class="o">=</span> <span class="n">df_mar</span><span class="p">),</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">excel_path</span>
+  <span class="p">)</span>
+  <span class="n">message</span><span class="p">(</span><span class="s2">"Файл 'monthly_reports.xlsx' створено."</span><span class="p">)</span>
+<span class="p">},</span> <span class="n">error</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">message</span><span class="p">(</span><span class="n">paste</span><span class="p">(</span><span class="s2">"Помилка запису Excel:"</span><span class="p">,</span> <span class="n">e</span><span class="err">$</span><span class="n">message</span><span class="p">))</span>
+<span class="p">})</span>
 
 <span class="c1"># 2.3. goals.csv</span>
-<span class="n">goals_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">'metric'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'total_users'</span><span class="p">,</span> <span class="s1">'total_sessions'</span><span class="p">],</span> <span class="s1">'target_value'</span><span class="p">:</span> <span class="p">[</span><span class="mi">2500</span><span class="p">,</span> <span class="mi">50000</span><span class="p">]})</span>
-<span class="n">csv_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">'goals.csv'</span><span class="p">)</span>
-<span class="n">goals_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">csv_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Файл 'goals.csv' створено."</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"--- ЕТАП 0 ЗАВЕРШЕНО. ПОЧАТОК АНАЛІЗУ (ЕТАПИ 1-4) ---</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+<span class="n">goals_df</span> <span class="o">&lt;-</span> <span class="n">tibble</span><span class="p">(</span><span class="n">metric</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="s1">'total_users'</span><span class="p">,</span> <span class="s1">'total_sessions'</span><span class="p">),</span> <span class="n">target_value</span> <span class="o">=</span> <span class="n">c</span><span class="p">(</span><span class="mi">2500</span><span class="p">,</span> <span class="mi">50000</span><span class="p">))</span>
+<span class="n">csv_path</span> <span class="o">&lt;-</span> <span class="n">file</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s2">"goals.csv"</span><span class="p">)</span>
+<span class="n">readr</span><span class="p">::</span><span class="n">write_csv</span><span class="p">(</span><span class="n">goals_df</span><span class="p">,</span> <span class="n">csv_path</span><span class="p">)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"Файл 'goals.csv' створено."</span><span class="p">)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"--- ЕТАП 0 ЗАВЕРШЕНО. ПОЧАТОК АНАЛІЗУ (ЕТАПИ 1-4) ---</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
 
 
 <span class="c1"># --- ЕТАП 1: РОБОТА З JSON ---</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"--- ЕТАП 1: РОБОТА З JSON ---"</span><span class="p">)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"--- ЕТАП 1: РОБОТА З JSON ---"</span><span class="p">)</span>
 
-<span class="c1"># 1.1. Завантажуємо JSON (шлях з Етапу 0)</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
-<span class="c1"># 1.2. Перетворюємо у DataFrame та "розгортаємо"</span>
-<span class="n">daily_campaign_metrics</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">json_normalize</span><span class="p">(</span>
-    <span class="n">json_data</span><span class="p">,</span>
-    <span class="n">record_path</span><span class="o">=</span><span class="p">[</span><span class="s1">'campaigns'</span><span class="p">],</span>
-    <span class="n">meta</span><span class="o">=</span><span class="p">[</span><span class="s1">'date'</span><span class="p">,</span> <span class="s1">'page_views'</span><span class="p">,</span> <span class="s1">'unique_users'</span><span class="p">,</span> <span class="s1">'bounce_rate'</span><span class="p">]</span>
-<span class="p">)</span>
+<span class="c1"># 1.1. &amp; 1.2. Завантажуємо та "розгортаємо" JSON</span>
+<span class="c1"># (Аналог pd.json_normalize з `record_path` та `meta`)</span>
+<span class="c1"># simplifyVector = TRUE автоматично перетворює JSON на data.frame,</span>
+<span class="c1"># а tidyr::unnest() "розгортає" вкладений список `campaigns` у нові рядки.</span>
+<span class="n">daily_campaign_metrics</span> <span class="o">&lt;-</span> <span class="n">jsonlite</span><span class="p">::</span><span class="n">read_json</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="n">simplifyVector</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">as_tibble</span><span class="p">()</span> <span class="o">%&gt;%</span>
+  <span class="n">tidyr</span><span class="p">::</span><span class="n">unnest</span><span class="p">(</span><span class="n">campaigns</span><span class="p">)</span>
 
 <span class="c1"># 1.3. Залишаємо лише записи, де вартість кампанії &gt; 0</span>
-<span class="n">daily_campaign_metrics</span> <span class="o">=</span> <span class="n">daily_campaign_metrics</span><span class="p">[</span><span class="n">daily_campaign_metrics</span><span class="p">[</span><span class="s1">'cost'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">daily_campaign_metrics</span> <span class="o">&lt;-</span> <span class="n">daily_campaign_metrics</span> <span class="o">%&gt;%</span>
+  <span class="nb">filter</span><span class="p">(</span><span class="n">cost</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Результат Етапу 1 (daily_campaign_metrics):"</span><span class="p">)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"Результат Етапу 1 (daily_campaign_metrics):"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">daily_campaign_metrics</span><span class="p">)</span>
 
 
 <span class="c1"># --- ЕТАП 2: ПЕРЕТВОРЕННЯ ФОРМАТІВ ---</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- ЕТАП 2: ПЕРЕТВОРЕННЯ ФОРМАТІВ ---"</span><span class="p">)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- ЕТАП 2: ПЕРЕТВОРЕННЯ ФОРМАТІВ ---"</span><span class="p">)</span>
 
-<span class="c1"># 2.1. Завантажуємо всі аркуші з monthly_reports.xlsx (шлях з Етапу 0)</span>
-<span class="n">all_sheets</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="n">excel_path</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="c1"># 2.1. &amp; 2.2. Завантажуємо всі аркуші з Excel і об'єднуємо</span>
+<span class="c1"># (Аналог pd.read_excel(sheet_name=None) та pd.concat)</span>
+<span class="n">sheet_names</span> <span class="o">&lt;-</span> <span class="n">readxl</span><span class="p">::</span><span class="n">excel_sheets</span><span class="p">(</span><span class="n">excel_path</span><span class="p">)</span>
 
-<span class="c1"># 2.2. Об'єднуємо аркуші у єдину таблицю</span>
-<span class="n">monthly_sheets</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">month_name</span><span class="p">,</span> <span class="n">sheet_df</span> <span class="ow">in</span> <span class="n">all_sheets</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    <span class="n">sheet_df</span><span class="p">[</span><span class="s1">'month_name'</span><span class="p">]</span> <span class="o">=</span> <span class="n">month_name</span>
-    <span class="n">monthly_sheets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sheet_df</span><span class="p">)</span>
-<span class="n">monthly_traffic</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">monthly_sheets</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">monthly_traffic</span> <span class="o">&lt;-</span> <span class="n">purrr</span><span class="p">::</span><span class="n">map_df</span><span class="p">(</span><span class="n">sheet_names</span><span class="p">,</span> <span class="o">~</span><span class="p">{</span>
+  <span class="n">readxl</span><span class="p">::</span><span class="n">read_excel</span><span class="p">(</span><span class="n">excel_path</span><span class="p">,</span> <span class="n">sheet</span> <span class="o">=</span> <span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">%&gt;%</span>
+    <span class="n">mutate</span><span class="p">(</span><span class="n">month_name</span> <span class="o">=</span> <span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="c1"># Додаємо стовпець з назвою аркуша</span>
+<span class="p">})</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Результат 2.2 (monthly_traffic):"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">monthly_traffic</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"Результат 2.2 (monthly_traffic):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">head</span><span class="p">(</span><span class="n">monthly_traffic</span><span class="p">))</span>
 
-<span class="c1"># 2.3. Завантажуємо goals.csv (шлях з Етапу 0)</span>
-<span class="n">goals</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_path</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Результат 2.3 (goals):"</span><span class="p">)</span>
+<span class="c1"># 2.3. Завантажуємо goals.csv</span>
+<span class="n">goals</span> <span class="o">&lt;-</span> <span class="n">readr</span><span class="p">::</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_path</span><span class="p">)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Результат 2.3 (goals):"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">goals</span><span class="p">)</span>
 
 
 <span class="c1"># --- ЕТАП 3: ОБ’ЄДНАННЯ ТА ВІКОННІ ОПЕРАЦІЇ ---</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- ЕТАП 3: ВІКОННІ ОПЕРАЦІЇ ---"</span><span class="p">)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- ЕТАП 3: ВІКОННІ ОПЕРАЦІЇ ---"</span><span class="p">)</span>
 
 <span class="c1"># 3.1. Перетворюємо 'date' у 'month' для агрегації</span>
-<span class="n">daily_campaign_metrics</span><span class="p">[</span><span class="s1">'month'</span><span class="p">]</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">daily_campaign_metrics</span><span class="p">[</span><span class="s1">'date'</span><span class="p">])</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">'%Y-%m'</span><span class="p">)</span>
-
-<span class="c1"># 3.2. Агрегуємо щоденні дані по кампаніях до рівня місяця</span>
-<span class="n">monthly_summary</span> <span class="o">=</span> <span class="n">daily_campaign_metrics</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'month'</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span>
-    <span class="n">page_views</span><span class="o">=</span><span class="p">(</span><span class="s1">'page_views'</span><span class="p">,</span> <span class="s1">'mean'</span><span class="p">),</span>
-    <span class="n">unique_users</span><span class="o">=</span><span class="p">(</span><span class="s1">'unique_users'</span><span class="p">,</span> <span class="s1">'mean'</span><span class="p">),</span>
-    <span class="n">bounce_rate</span><span class="o">=</span><span class="p">(</span><span class="s1">'bounce_rate'</span><span class="p">,</span> <span class="s1">'mean'</span><span class="p">),</span>
-    <span class="n">total_cost</span><span class="o">=</span><span class="p">(</span><span class="s1">'cost'</span><span class="p">,</span> <span class="s1">'sum'</span><span class="p">)</span>
-<span class="p">)</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-
-<span class="c1"># 3.3. Розрахунок конверсії</span>
-<span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'conversion'</span><span class="p">]</span> <span class="o">=</span> <span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'unique_users'</span><span class="p">]</span> <span class="o">/</span> <span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'page_views'</span><span class="p">]</span>
-
-<span class="c1"># 3.4. Розрахунок ROI</span>
-<span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'ROI'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'unique_users'</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.1</span> <span class="o">-</span> <span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'total_cost'</span><span class="p">])</span> <span class="o">/</span> <span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'total_cost'</span><span class="p">]</span>
+<span class="c1"># 3.2. Агрегуємо дані до рівня місяця</span>
+<span class="c1"># (Аналог groupby().agg())</span>
+<span class="n">monthly_summary</span> <span class="o">&lt;-</span> <span class="n">daily_campaign_metrics</span> <span class="o">%&gt;%</span>
+  <span class="n">mutate</span><span class="p">(</span><span class="n">month</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="k">as</span><span class="o">.</span><span class="n">Date</span><span class="p">(</span><span class="n">date</span><span class="p">),</span> <span class="s2">"%Y-%m"</span><span class="p">))</span> <span class="o">%&gt;%</span>
+  <span class="n">group_by</span><span class="p">(</span><span class="n">month</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">summarise</span><span class="p">(</span>
+    <span class="n">page_views</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">page_views</span><span class="p">,</span> <span class="n">na</span><span class="o">.</span><span class="n">rm</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">),</span>
+    <span class="n">unique_users</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">unique_users</span><span class="p">,</span> <span class="n">na</span><span class="o">.</span><span class="n">rm</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">),</span>
+    <span class="n">bounce_rate</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="n">bounce_rate</span><span class="p">,</span> <span class="n">na</span><span class="o">.</span><span class="n">rm</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">),</span>
+    <span class="n">total_cost</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">na</span><span class="o">.</span><span class="n">rm</span> <span class="o">=</span> <span class="n">TRUE</span><span class="p">),</span>
+    <span class="o">.</span><span class="n">groups</span> <span class="o">=</span> <span class="s1">'drop'</span> <span class="c1"># Завершити групування</span>
+  <span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="c1"># 3.3. Розрахунок конверсії</span>
+  <span class="n">mutate</span><span class="p">(</span><span class="n">conversion</span> <span class="o">=</span> <span class="n">unique_users</span> <span class="o">/</span> <span class="n">page_views</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="c1"># 3.4. Розрахунок ROI</span>
+  <span class="n">mutate</span><span class="p">(</span><span class="n">ROI</span> <span class="o">=</span> <span class="p">(</span><span class="n">unique_users</span> <span class="o">*</span> <span class="mf">0.1</span> <span class="o">-</span> <span class="n">total_cost</span><span class="p">)</span> <span class="o">/</span> <span class="n">total_cost</span><span class="p">)</span>
 
 <span class="c1"># --- 3.5. Віконні функції ---</span>
-<span class="n">monthly_summary</span> <span class="o">=</span> <span class="n">monthly_summary</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">'month'</span><span class="p">)</span>
+<span class="c1"># (Аналог .rank(), .diff(), .cumsum())</span>
+<span class="n">monthly_summary</span> <span class="o">&lt;-</span> <span class="n">monthly_summary</span> <span class="o">%&gt;%</span>
+  <span class="n">arrange</span><span class="p">(</span><span class="n">month</span><span class="p">)</span> <span class="o">%&gt;%</span> <span class="c1"># Важливо сортувати перед diff() та cumsum()</span>
+  <span class="n">mutate</span><span class="p">(</span>
+    <span class="c1"># Ранжування: ROI (min_rank - аналог method='min')</span>
+    <span class="n">roi_rank</span> <span class="o">=</span> <span class="n">min_rank</span><span class="p">(</span><span class="n">desc</span><span class="p">(</span><span class="n">ROI</span><span class="p">)),</span>
+    
+    <span class="c1"># Зсув: зміна bounce rate (lag() - аналог .diff())</span>
+    <span class="n">bounce_change</span> <span class="o">=</span> <span class="n">bounce_rate</span> <span class="o">-</span> <span class="n">lag</span><span class="p">(</span><span class="n">bounce_rate</span><span class="p">),</span>
+    
+    <span class="c1"># Накопичення: унікальні користувачі</span>
+    <span class="n">cum_users</span> <span class="o">=</span> <span class="n">cumsum</span><span class="p">(</span><span class="n">unique_users</span><span class="p">)</span>
+  <span class="p">)</span>
 
-<span class="c1"># Ранжування: ROI</span>
-<span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'roi_rank'</span><span class="p">]</span> <span class="o">=</span> <span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'ROI'</span><span class="p">]</span><span class="o">.</span><span class="n">rank</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s1">'min'</span><span class="p">)</span>
-
-<span class="c1"># Зсув: зміна bounce rate</span>
-<span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'bounce_change'</span><span class="p">]</span> <span class="o">=</span> <span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'bounce_rate'</span><span class="p">]</span><span class="o">.</span><span class="n">diff</span><span class="p">()</span>
-
-<span class="c1"># Накопичення: унікальні користувачі</span>
-<span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'cum_users'</span><span class="p">]</span> <span class="o">=</span> <span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'unique_users'</span><span class="p">]</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">"Результат Етапу 3 (monthly_summary з віконними функціями):"</span><span class="p">)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"Результат Етапу 3 (monthly_summary з віконними функціями):"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">monthly_summary</span><span class="p">)</span>
 
 
 <span class="c1"># --- ЕТАП 4: АНАЛІЗ ---</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- ЕТАП 4: АНАЛІЗ ---"</span><span class="p">)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- ЕТАП 4: АНАЛІЗ ---"</span><span class="p">)</span>
 
 <span class="c1"># 4.1. Перевірка досягнення цілей</span>
-<span class="n">target_users_value</span> <span class="o">=</span> <span class="n">goals</span><span class="p">[</span><span class="n">goals</span><span class="p">[</span><span class="s1">'metric'</span><span class="p">]</span> <span class="o">==</span> <span class="s1">'total_users'</span><span class="p">][</span><span class="s1">'target_value'</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">final_cum_users</span> <span class="o">=</span> <span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'cum_users'</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># Останнє значення</span>
+<span class="n">target_users_value</span> <span class="o">&lt;-</span> <span class="n">goals</span> <span class="o">%&gt;%</span>
+  <span class="nb">filter</span><span class="p">(</span><span class="n">metric</span> <span class="o">==</span> <span class="s1">'total_users'</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">pull</span><span class="p">(</span><span class="n">target_value</span><span class="p">)</span> <span class="c1"># pull() витягує значення стовпця</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ціль по 'total_users': </span><span class="si">{</span><span class="n">target_users_value</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Накопичено користувачів (сума середньоденних): </span><span class="si">{</span><span class="n">final_cum_users</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">final_cum_users</span> <span class="o">&gt;=</span> <span class="n">target_users_value</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"&gt;&gt;&gt; Ціль досягнуто!"</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"&gt;&gt;&gt; Ціль не досягнуто."</span><span class="p">)</span>
+<span class="n">final_cum_users</span> <span class="o">&lt;-</span> <span class="n">monthly_summary</span> <span class="o">%&gt;%</span>
+  <span class="n">pull</span><span class="p">(</span><span class="n">cum_users</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="n">last</span><span class="p">()</span> <span class="c1"># Останнє значення</span>
+
+<span class="n">message</span><span class="p">(</span><span class="n">sprintf</span><span class="p">(</span><span class="s2">"Ціль по 'total_users': </span><span class="si">%s</span><span class="s2">"</span><span class="p">,</span> <span class="n">target_users_value</span><span class="p">))</span>
+<span class="n">message</span><span class="p">(</span><span class="n">sprintf</span><span class="p">(</span><span class="s2">"Накопичено користувачів (сума середньоденних): </span><span class="si">%.2f</span><span class="s2">"</span><span class="p">,</span> <span class="n">final_cum_users</span><span class="p">))</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="n">final_cum_users</span> <span class="o">&gt;=</span> <span class="n">target_users_value</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">message</span><span class="p">(</span><span class="s2">"&gt;&gt;&gt; Ціль досягнуто!"</span><span class="p">)</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+  <span class="n">message</span><span class="p">(</span><span class="s2">"&gt;&gt;&gt; Ціль не досягнуто."</span><span class="p">)</span>
+<span class="p">}</span>
 
 <span class="c1"># 4.2. Аналог "semi_join": місяці, коли *всі* кампанії мали ROI &gt; 0</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">4.2. Аналіз 'Semi-Join' (місяці, де ROI &gt; 0 для *всіх* кампаній):"</span><span class="p">)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">4.2. Аналіз 'Semi-Join' (місяці, де ROI &gt; 0 для *всіх* кампаній):"</span><span class="p">)</span>
 
 <span class="c1"># Розраховуємо ROI для *кожної окремої* кампанії (з Етапу 1)</span>
-<span class="n">daily_campaign_metrics</span><span class="p">[</span><span class="s1">'ROI'</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">daily_campaign_metrics</span><span class="p">[</span><span class="s1">'unique_users'</span><span class="p">]</span> <span class="o">*</span> <span class="mf">0.1</span> <span class="o">-</span> <span class="n">daily_campaign_metrics</span><span class="p">[</span><span class="s1">'cost'</span><span class="p">])</span> <span class="o">/</span> <span class="n">daily_campaign_metrics</span><span class="p">[</span><span class="s1">'cost'</span><span class="p">]</span>
-<span class="n">grouped_by_month</span> <span class="o">=</span> <span class="n">daily_campaign_metrics</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'month'</span><span class="p">)</span>
+<span class="n">daily_campaign_metrics_with_roi</span> <span class="o">&lt;-</span> <span class="n">daily_campaign_metrics</span> <span class="o">%&gt;%</span>
+  <span class="n">mutate</span><span class="p">(</span>
+    <span class="n">month</span> <span class="o">=</span> <span class="nb">format</span><span class="p">(</span><span class="k">as</span><span class="o">.</span><span class="n">Date</span><span class="p">(</span><span class="n">date</span><span class="p">),</span> <span class="s2">"%Y-%m"</span><span class="p">),</span>
+    <span class="n">ROI</span> <span class="o">=</span> <span class="p">(</span><span class="n">unique_users</span> <span class="o">*</span> <span class="mf">0.1</span> <span class="o">-</span> <span class="n">cost</span><span class="p">)</span> <span class="o">/</span> <span class="n">cost</span>
+  <span class="p">)</span>
 
-<span class="c1"># .filter() для перевірки, чи *всі* (all) ROI в групі &gt; 0</span>
-<span class="n">good_months_df</span> <span class="o">=</span> <span class="n">grouped_by_month</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">'ROI'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+<span class="c1"># .filter() в R (з dplyr) може працювати з групами</span>
+<span class="c1"># (Аналог pandas .groupby().filter(lambda...))</span>
+<span class="n">good_months_df</span> <span class="o">&lt;-</span> <span class="n">daily_campaign_metrics_with_roi</span> <span class="o">%&gt;%</span>
+  <span class="n">group_by</span><span class="p">(</span><span class="n">month</span><span class="p">)</span> <span class="o">%&gt;%</span>
+  <span class="nb">filter</span><span class="p">(</span><span class="nb">all</span><span class="p">(</span><span class="n">ROI</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span> <span class="o">%&gt;%</span> <span class="c1"># Залишити групи, де ВСІ ROI &gt; 0</span>
+  <span class="n">ungroup</span><span class="p">()</span>
 
-<span class="k">if</span> <span class="n">good_months_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Не знайдено місяців, де *всі* кампанії мали ROI &gt; 0."</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Місяці, де всі кампанії мали ROI &gt; 0:"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">good_months_df</span><span class="p">[</span><span class="s1">'month'</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
-
+<span class="k">if</span> <span class="p">(</span><span class="n">nrow</span><span class="p">(</span><span class="n">good_months_df</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">message</span><span class="p">(</span><span class="s2">"Не знайдено місяців, де *всі* кампанії мали ROI &gt; 0."</span><span class="p">)</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+  <span class="n">message</span><span class="p">(</span><span class="s2">"Місяці, де всі кампанії мали ROI &gt; 0:"</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="n">unique</span><span class="p">(</span><span class="n">good_months_df</span><span class="err">$</span><span class="n">month</span><span class="p">))</span>
+<span class="p">}</span>
 
 <span class="c1"># 4.3. Аналог "anti_join": місяці, коли були витрати, але bounce rate зріс</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">4.3. Аналіз 'Anti-Join' (витрати були, bounce rate зріс):"</span><span class="p">)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">4.3. Аналіз 'Anti-Join' (витрати були, bounce rate зріс):"</span><span class="p">)</span>
 <span class="c1"># Використовуємо 'monthly_summary' з Етапу 3</span>
-<span class="n">bad_months_df</span> <span class="o">=</span> <span class="n">monthly_summary</span><span class="p">[</span>
-    <span class="p">(</span><span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'total_cost'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> 
-    <span class="p">(</span><span class="n">monthly_summary</span><span class="p">[</span><span class="s1">'bounce_change'</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
-<span class="p">]</span>
+<span class="n">bad_months_df</span> <span class="o">&lt;-</span> <span class="n">monthly_summary</span> <span class="o">%&gt;%</span>
+  <span class="nb">filter</span><span class="p">(</span><span class="n">total_cost</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;</span> <span class="n">bounce_change</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
 
-<span class="k">if</span> <span class="n">bad_months_df</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Не знайдено місяців, де одночасно були витрати і зріс bounce rate."</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Місяці з витратами та зростанням bounce rate:"</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">bad_months_df</span><span class="p">[[</span><span class="s1">'month'</span><span class="p">,</span> <span class="s1">'total_cost'</span><span class="p">,</span> <span class="s1">'bounce_change'</span><span class="p">]])</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">nrow</span><span class="p">(</span><span class="n">bad_months_df</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">message</span><span class="p">(</span><span class="s2">"Не знайдено місяців, де одночасно були витрати і зріс bounce rate."</span><span class="p">)</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+  <span class="n">message</span><span class="p">(</span><span class="s2">"Місяці з витратами та зростанням bounce rate:"</span><span class="p">)</span>
+  <span class="nb">print</span><span class="p">(</span><span class="n">bad_months_df</span> <span class="o">%&gt;%</span> <span class="n">select</span><span class="p">(</span><span class="n">month</span><span class="p">,</span> <span class="n">total_cost</span><span class="p">,</span> <span class="n">bounce_change</span><span class="p">))</span>
+<span class="p">}</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- АНАЛІЗ ЗАВЕРШЕНО ---"</span><span class="p">)</span>
+<span class="n">message</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">--- АНАЛІЗ ЗАВЕРШЕНО ---"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7788,76 +7811,135 @@ a.anchor-link {
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child">
 <div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
-<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
-<pre>--- ЕТАП 0: СТВОРЕННЯ ВИХІДНИХ ФАЙЛІВ ---
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="application/vnd.jupyter.stderr" tabindex="0">
+<pre>Loading required package: tidyverse
+
+── <span class="ansi-bold">Attaching core tidyverse packages</span> ──────────────────────── tidyverse 2.0.0 ──
+<span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">dplyr    </span> 1.1.4     <span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">readr    </span> 2.1.5
+<span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">forcats  </span> 1.0.1     <span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">stringr  </span> 1.6.0
+<span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">ggplot2  </span> 4.0.0     <span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">tibble   </span> 3.3.0
+<span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">lubridate</span> 1.9.4     <span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">tidyr    </span> 1.3.1
+<span class="ansi-green-fg">✔</span> <span class="ansi-blue-fg">purrr    </span> 1.2.0     
+── <span class="ansi-bold">Conflicts</span> ────────────────────────────────────────── tidyverse_conflicts() ──
+<span class="ansi-red-fg">✖</span> <span class="ansi-blue-fg">dplyr</span>::<span class="ansi-green-fg">filter()</span> masks <span class="ansi-blue-fg">stats</span>::filter()
+<span class="ansi-red-fg">✖</span> <span class="ansi-blue-fg">dplyr</span>::<span class="ansi-green-fg">lag()</span>    masks <span class="ansi-blue-fg">stats</span>::lag()
+<span class="ansi-cyan-fg">ℹ</span> Use the conflicted package (<span class="ansi-blue-fg">&lt;http://conflicted.r-lib.org/&gt;</span>) to force all conflicts to become errors
+Loading required package: jsonlite
+
+
+Attaching package: ‘jsonlite’
+
+
+The following object is masked from ‘package:purrr’:
+
+    flatten
+
+
+Loading required package: readxl
+
+Loading required package: writexl
+
+Warning message in library(package, lib.loc = lib.loc, character.only = TRUE, logical.return = TRUE, :
+“there is no package called ‘writexl’”
+Installing package into ‘/usr/local/lib/R/site-library’
+(as ‘lib’ is unspecified)
+
+--- ЕТАП 0: СТВОРЕННЯ ВИХІДНИХ ФАЙЛІВ ---
+
 Папка data вже існує.
+
 Файл 'traffic.json' створено.
+
 Файл 'monthly_reports.xlsx' створено.
+
 Файл 'goals.csv' створено.
+
 --- ЕТАП 0 ЗАВЕРШЕНО. ПОЧАТОК АНАЛІЗУ (ЕТАПИ 1-4) ---
 
---- ЕТАП 1: РОБОТА З JSON ---
-Результат Етапу 1 (daily_campaign_metrics):
-         name      channel  cost        date page_views unique_users  \
-0  google_ads  paid_search   120  2024-01-05       1250          840   
-1   email_jan        email    50  2024-01-05       1250          840   
-2  google_ads  paid_search   130  2024-01-15       1300          900   
-4  google_ads  paid_search   110  2024-02-05       1100          750   
-5   email_feb        email    40  2024-02-05       1100          750   
-6  google_ads  paid_search   115  2024-02-15       1150          780   
-7  google_ads  paid_search   140  2024-03-05       1400          950   
-8   email_mar        email    55  2024-03-05       1400          950   
 
-  bounce_rate  
-0        0.42  
-1        0.42  
-2         0.4  
-4        0.45  
-5        0.45  
-6        0.44  
-7        0.38  
-8        0.38  
+--- ЕТАП 1: РОБОТА З JSON ---
+
+Результат Етапу 1 (daily_campaign_metrics):
+
+<span class="ansi-black-intense-fg"># A tibble: 8 × 7</span>
+  date       page_views unique_users bounce_rate name       channel      cost
+  <span class="ansi-black-intense-fg">&lt;chr&gt;</span>           <span class="ansi-black-intense-fg">&lt;int&gt;</span>        <span class="ansi-black-intense-fg">&lt;int&gt;</span>       <span class="ansi-black-intense-fg">&lt;dbl&gt;</span> <span class="ansi-black-intense-fg">&lt;chr&gt;</span>      <span class="ansi-black-intense-fg">&lt;chr&gt;</span>       <span class="ansi-black-intense-fg">&lt;int&gt;</span>
+<span class="ansi-black-intense-fg">1</span> 2024-01-05       <span class="ansi-underline">1</span>250          840        0.42 google_ads paid_search   120
+<span class="ansi-black-intense-fg">2</span> 2024-01-05       <span class="ansi-underline">1</span>250          840        0.42 email_jan  email          50
+<span class="ansi-black-intense-fg">3</span> 2024-01-15       <span class="ansi-underline">1</span>300          900        0.4  google_ads paid_search   130
+<span class="ansi-black-intense-fg">4</span> 2024-02-05       <span class="ansi-underline">1</span>100          750        0.45 google_ads paid_search   110
+<span class="ansi-black-intense-fg">5</span> 2024-02-05       <span class="ansi-underline">1</span>100          750        0.45 email_feb  email          40
+<span class="ansi-black-intense-fg">6</span> 2024-02-15       <span class="ansi-underline">1</span>150          780        0.44 google_ads paid_search   115
+<span class="ansi-black-intense-fg">7</span> 2024-03-05       <span class="ansi-underline">1</span>400          950        0.38 google_ads paid_search   140
+<span class="ansi-black-intense-fg">8</span> 2024-03-05       <span class="ansi-underline">1</span>400          950        0.38 email_mar  email          55
 
 --- ЕТАП 2: ПЕРЕТВОРЕННЯ ФОРМАТІВ ---
+
 Результат 2.2 (monthly_traffic):
-        page  sessions  avg_duration_sec month_name
-0      /home     15000               120        jan
-1  /products      8000               180        jan
-2   /contact      1500                90        jan
-3      /home     13000               110        feb
-4  /products      7500               175        feb
+
+<span class="ansi-black-intense-fg"># A tibble: 6 × 4</span>
+  page      sessions avg_duration_sec month_name
+  <span class="ansi-black-intense-fg">&lt;chr&gt;</span>        <span class="ansi-black-intense-fg">&lt;dbl&gt;</span>            <span class="ansi-black-intense-fg">&lt;dbl&gt;</span> <span class="ansi-black-intense-fg">&lt;chr&gt;</span>     
+<span class="ansi-black-intense-fg">1</span> /home        <span class="ansi-underline">1</span><span class="ansi-underline">5</span>000              120 jan       
+<span class="ansi-black-intense-fg">2</span> /products     <span class="ansi-underline">8</span>000              180 jan       
+<span class="ansi-black-intense-fg">3</span> /contact      <span class="ansi-underline">1</span>500               90 jan       
+<span class="ansi-black-intense-fg">4</span> /home        <span class="ansi-underline">1</span><span class="ansi-underline">3</span>000              110 feb       
+<span class="ansi-black-intense-fg">5</span> /products     <span class="ansi-underline">7</span>500              175 feb       
+<span class="ansi-black-intense-fg">6</span> /contact      <span class="ansi-underline">1</span>400               95 feb       
+<span class="ansi-bold">Rows: </span><span class="ansi-blue-fg">2</span> <span class="ansi-bold">Columns: </span><span class="ansi-blue-fg">2</span>
+<span class="ansi-cyan-fg">──</span> <span class="ansi-bold">Column specification</span> <span class="ansi-cyan-fg">────────────────────────────────────────────────────────</span>
+<span class="ansi-bold">Delimiter:</span> ","
+<span class="ansi-red-fg">chr</span> (1): metric
+<span class="ansi-green-fg">dbl</span> (1): target_value
+
+<span class="ansi-cyan-fg">ℹ</span> Use `spec()` to retrieve the full column specification for this data.
+<span class="ansi-cyan-fg">ℹ</span> Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
 Результат 2.3 (goals):
-           metric  target_value
-0     total_users          2500
-1  total_sessions         50000
+
+<span class="ansi-black-intense-fg"># A tibble: 2 × 2</span>
+  metric         target_value
+  <span class="ansi-black-intense-fg">&lt;chr&gt;</span>                 <span class="ansi-black-intense-fg">&lt;dbl&gt;</span>
+<span class="ansi-black-intense-fg">1</span> total_users            <span class="ansi-underline">2</span>500
+<span class="ansi-black-intense-fg">2</span> total_sessions        <span class="ansi-underline">5</span><span class="ansi-underline">0</span>000
 
 --- ЕТАП 3: ВІКОННІ ОПЕРАЦІЇ ---
-Результат Етапу 3 (monthly_summary з віконними функціями):
-     month   page_views unique_users bounce_rate  total_cost conversion  \
-0  2024-01  1266.666667        860.0    0.413333         300   0.678947   
-1  2024-02  1116.666667        760.0    0.446667         265   0.680597   
-2  2024-03       1400.0        950.0        0.38         195   0.678571   
 
-        ROI  roi_rank bounce_change cum_users  
-0 -0.713333       3.0           NaN     860.0  
-1 -0.713208       2.0      0.033333    1620.0  
-2 -0.512821       1.0     -0.066667    2570.0  
+Результат Етапу 3 (monthly_summary з віконними функціями):
+
+<span class="ansi-black-intense-fg"># A tibble: 3 × 10</span>
+  month   page_views unique_users bounce_rate total_cost conversion    ROI
+  <span class="ansi-black-intense-fg">&lt;chr&gt;</span>        <span class="ansi-black-intense-fg">&lt;dbl&gt;</span>        <span class="ansi-black-intense-fg">&lt;dbl&gt;</span>       <span class="ansi-black-intense-fg">&lt;dbl&gt;</span>      <span class="ansi-black-intense-fg">&lt;int&gt;</span>      <span class="ansi-black-intense-fg">&lt;dbl&gt;</span>  <span class="ansi-black-intense-fg">&lt;dbl&gt;</span>
+<span class="ansi-black-intense-fg">1</span> 2024-01      <span class="ansi-underline">1</span>267.          860       0.413        300      0.679 -<span class="ansi-red-fg">0</span><span class="ansi-red-fg">.</span><span class="ansi-red-fg">713</span>
+<span class="ansi-black-intense-fg">2</span> 2024-02      <span class="ansi-underline">1</span>117.          760       0.447        265      0.681 -<span class="ansi-red-fg">0</span><span class="ansi-red-fg">.</span><span class="ansi-red-fg">713</span>
+<span class="ansi-black-intense-fg">3</span> 2024-03      <span class="ansi-underline">1</span>400           950       0.38         195      0.679 -<span class="ansi-red-fg">0</span><span class="ansi-red-fg">.</span><span class="ansi-red-fg">513</span>
+<span class="ansi-black-intense-fg"># ℹ 3 more variables: roi_rank &lt;int&gt;, bounce_change &lt;dbl&gt;, cum_users &lt;dbl&gt;</span>
 
 --- ЕТАП 4: АНАЛІЗ ---
+
 Ціль по 'total_users': 2500
+
 Накопичено користувачів (сума середньоденних): 2570.00
+
 &gt;&gt;&gt; Ціль досягнуто!
 
+
 4.2. Аналіз 'Semi-Join' (місяці, де ROI &gt; 0 для *всіх* кампаній):
+
 Не знайдено місяців, де *всі* кампанії мали ROI &gt; 0.
 
+
 4.3. Аналіз 'Anti-Join' (витрати були, bounce rate зріс):
+
 Місяці з витратами та зростанням bounce rate:
-     month  total_cost bounce_change
-1  2024-02         265      0.033333
+
+<span class="ansi-black-intense-fg"># A tibble: 1 × 3</span>
+  month   total_cost bounce_change
+  <span class="ansi-black-intense-fg">&lt;chr&gt;</span>        <span class="ansi-black-intense-fg">&lt;int&gt;</span>         <span class="ansi-black-intense-fg">&lt;dbl&gt;</span>
+<span class="ansi-black-intense-fg">1</span> 2024-02        265        0.033<span class="ansi-underline">3</span>
 
 --- АНАЛІЗ ЗАВЕРШЕНО ---
+
 </pre>
 </div>
 </div>
